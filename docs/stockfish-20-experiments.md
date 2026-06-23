@@ -220,8 +220,55 @@ Decision:
 
 - Rejected. The first local smoke filter showed the baseline clearly ahead.
 
+## Accepted: Lazy Simple Evaluation Shortcut
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/snicolet/Stockfish`, branch `simple_eval10`.
+- Fishtest active runs observed on 2026-06-23 had positive LTC/VLTC LLR, but were not finished accepted upstream patches when tested locally.
+
+Patch summary:
+
+- Add `Eval::simple_eval()` for a side-to-move material-only score.
+- Store root simple evaluation and root best value in `Search::Worker`.
+- In `Search::Worker::evaluate()`, skip the full NNUE evaluation for sufficiently large material/simple-eval cases, adjusted by rule-50 shuffling and root evaluation bounds.
+
+Bench:
+
+- Nodes searched: `3106469`
+
+Initial result from the baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `18`
+- Losses: `21`
+- Draws: `25`
+- Points: `30.5 / 64`
+- Score: `47.66%`
+- Elo: `-16.30 +/- 70.66`
+
+Fixed-node result from the baseline perspective on `uho_lichess_4852_sample_256.epd`:
+
+- Games: `128`
+- Wins: `39`
+- Losses: `38`
+- Draws: `51`
+- Points: `64.5 / 128`
+- Score: `50.39%`
+- Elo: `+2.71 +/- 33.32`
+
+Short time-control results from the baseline perspective on official UHO samples:
+
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062317`: `13W / 19L / 32D`, score `45.31%`, Elo `-32.67 +/- 35.53`.
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062318`: `13W / 17L / 34D`, score `46.88%`, Elo `-21.74 +/- 42.26`.
+- `TC=5+0.05`, `uho_lichess_4852_sample_512.epd`, seed `2026062319`: `26W / 34L / 68D`, score `46.88%`, Elo `-21.74 +/- 26.76`.
+
+Decision:
+
+- Accepted as a Stockfish 20 candidate patch. Fixed-node UHO was neutral, but this patch is intended to save time by bypassing full NNUE in selected positions; three independent short time-control UHO runs all favored the candidate.
+
 ## Current Status
 
-- No source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline.
-- The fork release candidate remains `stockfish-20-rc1`.
+- One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
+- The fork release candidate should be rebuilt and retagged after PGO validation.
 - Future experiments should target different mechanisms instead of retuning these local history constants.
