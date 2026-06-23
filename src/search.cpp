@@ -1104,10 +1104,6 @@ moves_loop:  // When in check, search starts here
         if (move == excludedMove)
             continue;
 
-        // prefetch_move_key does not understand castling, castling rights, en passant
-        // or promotions; for these "rare" moves the prefetch lands on an unused line.
-        pos.prefetch_move(move, tt);
-
         // Check for legality
         if (!pos.legal(move))
             continue;
