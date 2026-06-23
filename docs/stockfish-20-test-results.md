@@ -176,3 +176,30 @@ Official UHO result from the `Base` / rc2-nopgo perspective:
 Decision:
 
 - Rejected. The longer UHO test showed the current rc2 baseline ahead, so the source patch was removed.
+
+## Incremental Rejection: Better Skip NNUE Architecture And Net
+
+Purpose:
+
+- Test the Fishtest-active `better-skip2-fishtest` NNUE architecture and network change as an incremental patch over the current local `stockfish-20-rc2` source.
+- Stop at the smoke filter if the current rc2 baseline is already clearly ahead.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the `better-skip2-fishtest` NNUE architecture and `nn-e9b0f021454e.nnue`.
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062327`
+- Games: `64`
+- Wins: `25`
+- Losses: `16`
+- Draws: `23`
+- Score: `57.03%`
+- Elo: `+49.18 +/- 64.50`
+
+Decision:
+
+- Rejected. The current rc2 baseline won the smoke filter clearly, so no longer UHO test was run.

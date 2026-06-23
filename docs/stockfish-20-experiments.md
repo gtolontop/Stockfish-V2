@@ -389,6 +389,41 @@ Decision:
 
 - Rejected locally as an incremental patch over `rc2`. The smoke filter was mildly favorable, but the longer UHO test showed the current `rc2` baseline clearly ahead.
 
+## Rejected Incremental: Better Skip NNUE Architecture And Net
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/anematode/Stockfish`, branch `better-skip2-fishtest`.
+- Fishtest active run observed on 2026-06-23 had low positive LLR, but only early evidence.
+
+Patch summary:
+
+- Changed the default network from `nn-71d6d32cb962.nnue` to `nn-e9b0f021454e.nnue`.
+- Changed the NNUE architecture around the skip connection and final affine input.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `2671360`
+- Nodes/second: `863679`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `25`
+- Losses: `16`
+- Draws: `23`
+- Points: `36.5 / 64`
+- Score: `57.03%`
+- Elo: `+49.18 +/- 64.50`
+
+Decision:
+
+- Rejected. The first incremental smoke filter showed the current `rc2` baseline clearly ahead, so the NNUE architecture patch and downloaded candidate network were removed.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
