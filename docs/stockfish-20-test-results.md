@@ -538,6 +538,23 @@ Decision:
 
 - Rejected. The smoke filter favored the current `stockfish-20-rc2` source, so no longer UHO test or PGO artifact was run.
 
+## Open PR Triage: NFC And Maintenance Candidates
+
+Purpose:
+
+- Classify recent open official PRs that looked nearby but do not directly target release strength over `stockfish-20-rc2`.
+
+Reviewed:
+
+- `#6635` `Compress threat indexing, update Full Threats version and hash`: open, dirty, no-functional-change; skipped because public discussion reports failed non-regression checks and a measured slowdown.
+- `#6720` `Simplify is_pv condition checks after TT probe`: open, clean, no-functional-change; skipped because reviewer discussion notes possible rare TT race semantics and no strength/speed target.
+- `#6902` `Simplify Evasion Logic`: open, clean, no-functional-change with passed non-regression STC; skipped as cleanup.
+- `#6910` `Clear capturedPiece in do_null_move`: open, clean, no-functional-change with passed non-regression STC/LTC; skipped as maintenance after reviewers reported no bench-changing position found.
+
+Decision:
+
+- No build or match was run for these PRs. None is expected to improve the fork release candidate against `stockfish-20-rc2`.
+
 ## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
 
 Purpose:

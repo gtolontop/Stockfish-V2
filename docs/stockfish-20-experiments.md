@@ -973,6 +973,19 @@ Decision:
 
 - Rejected as a local incremental patch over `rc2`. Despite strong public STC/LTC evidence on the upstream base, the local smoke filter favored the current release-candidate source, so no UHO or PGO follow-up was run.
 
+## Open PR Triage: NFC And Maintenance Candidates
+
+Reviewed but not applied:
+
+- PR `#6635`, `Compress threat indexing, update Full Threats version and hash`: open and dirty; described as no functional change. Public discussion reports failed non-regression checks and measured slowdown, so it is not a release-strength candidate for `rc2`.
+- PR `#6720`, `Simplify is_pv condition checks after TT probe`: open and clean; described as no functional change, but review notes possible rare TT race differences. It does not target strength or speed and was skipped.
+- PR `#6902`, `Simplify Evasion Logic`: open and clean; described as no functional change with passed non-regression STC. It was skipped because it is a cleanup, not an engine-strength increment.
+- PR `#6910`, `Clear capturedPiece in do_null_move`: open and clean; described as no functional change with passed non-regression STC/LTC. Review discussion indicates no bench-changing position was found, so it was skipped as a maintenance cleanup.
+
+Decision:
+
+- Not applied. These PRs may be useful upstream maintenance, but they do not make the current fork release candidate measurably stronger and would force a new artifact validation cycle without an expected Elo gain.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
