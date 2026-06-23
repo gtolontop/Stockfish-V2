@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stockfish 20 RC2 vs Stockfish 18 - Game Replay</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <style>
+    :root {
+      --bg: #101214;
+      --panel: #1c2024;
+      --text: #f2f4f6;
+      --muted: #9aa4ad;
+      --accent: #42c6a5;
+      --accent2: #e4c75f;
+      --light: #e7d7b6;
+      --dark: #7a9869;
+      --last: rgba(228, 199, 95, 0.62);
+      --border: #30363d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(320px, 680px) minmax(280px, 420px);
+      gap: 22px;
+      width: min(1160px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 24px 0;
+      align-items: start;
+    }
+
+    .topline {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .score {
+      text-align: right;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+
+    .board-wrap {
+      width: min(680px, 100%);
+    }
+
+    .board {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      border: 1px solid var(--border);
+      user-select: none;
+    }
+
+    .sq {
+      position: relative;
+      display: grid;
+      place-items: center;
+      font-size: clamp(28px, 7.2vw, 58px);
+      line-height: 1;
+    }
+
+    .sq.light {
+      background: var(--light);
+    }
+
+    .sq.dark {
+      background: var(--dark);
+    }
+
+    .sq.last::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--last);
+    }
+
+    .piece {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.25));
+    }
+
+    .coord {
+      position: absolute;
+      z-index: 2;
+      font-size: 11px;
+      color: rgba(0, 0, 0, 0.55);
+      font-weight: 700;
+    }
+
+    .file {
+      right: 5px;
+      bottom: 4px;
+    }
+
+    .rank {
+      left: 5px;
+      top: 4px;
+    }
+
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 16px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .meta {
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .meta strong {
+      color: var(--text);
+    }
+
+    .now {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      margin-bottom: 14px;
+    }
+
+    .move {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .eval {
+      color: var(--accent2);
+      font-size: 14px;
+      min-height: 18px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: #252b31;
+      color: var(--text);
+      padding: 10px 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .moves {
+      max-height: 360px;
+      overflow: auto;
+      border-top: 1px solid var(--border);
+      margin-top: 14px;
+      padding-top: 12px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .ply {
+      display: inline-block;
+      padding: 1px 5px;
+      margin: 1px 1px 1px 0;
+      border: 1px solid transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .ply.active {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 860px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .topline {
+        display: block;
+      }
+
+      .score {
+        text-align: left;
+        margin-top: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="topline">
+      <div>
+        <h1>Stockfish 20 RC2 bat Stockfish 18</h1>
+        <div class="sub">Partie réelle extraite du run Fastchess officiel UHO 1024, 23 juin 2026.</div>
+      </div>
+      <div class="score">Resultat: 0-1</div>
+    </section>
+
+    <section class="board-wrap">
+      <div id="board" class="board" aria-label="Echiquier"></div>
+    </section>
+
+    <aside class="panel">
+      <h2>Replay</h2>
+      <div class="meta">
+        <div><strong>Blancs:</strong> Stockfish 18 local build</div>
+        <div><strong>Noirs:</strong> Stockfish 20 RC2</div>
+        <div><strong>Position:</strong> UHO, depart au 8e coup</div>
+        <div><strong>Cadence:</strong> 5+0.05</div>
+      </div>
+
+      <div class="now">
+        <div id="moveLabel" class="move">Position initiale</div>
+        <div id="evalLabel" class="eval"></div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn" title="Retour au debut">|&lt;</button>
+        <button id="prevBtn" title="Coup precedent">&lt;</button>
+        <button id="playBtn" title="Lecture automatique">Play</button>
+        <button id="nextBtn" title="Coup suivant">&gt;</button>
+      </div>
+
+      <input id="slider" type="range" min="0" value="0">
+      <div id="moves" class="moves"></div>
+      <div class="note">Les evaluations affichees viennent des commentaires PGN Fastchess. Les Noirs sont notre Stockfish 20 RC2.</div>
+    </aside>
+  </main>
+
+  <script>
+    const PGN = `[Event "Fastchess Tournament"]
+[Site "?"]
+[Date "2026.06.23"]
+[Round "2"]
+[White "Base"]
+[Black "New"]
+[Result "0-1"]
+[SetUp "1"]
+[FEN "r1bqkb1r/p2ppppp/2nn4/1p6/2p5/PB1P1N2/1PP2PPP/RNBQK2R w KQkq - 0 8"]
+[GameDuration "00:00:19"]
+[GameStartTime "2026-06-23T07:11:12 +0200"]
+[GameEndTime "2026-06-23T07:11:34 +0200"]
+[PlyCount "195"]
+[Termination "adjudication"]
+[TimeControl "5+0.05"]
+
+8. dxc4 {-0.98/16 0.566s} bxc4 {+0.91/16 0.183s} 9. Ba4 {-1.02/14 0.080s}
+g6 {+0.92/14 0.102s} 10. Bd2 {-0.93/17 0.299s} Bg7 {+0.96/15 0.118s}
+11. Bc3 {-1.00/14 0.077s} O-O {+0.86/15 0.182s} 12. Bxg7 {-1.02/19 0.749s}
+Kxg7 {+1.06/15 0.098s} 13. O-O {-1.02/20 0.412s} Bb7 {+1.03/18 0.365s}
+14. Nc3 {-1.02/16 0.206s} Rc8 {+0.94/17 0.140s} 15. Qe2 {-1.06/15 0.392s}
+Nf5 {+1.08/14 0.118s} 16. Rad1 {-1.08/13 0.051s} d6 {+1.15/13 0.084s}
+17. g4 {-1.16/15 0.331s} Nh6 {+1.08/14 0.102s} 18. Rfe1 {-1.17/11 0.067s}
+Ng8 {+1.24/17 0.342s} 19. h4 {-0.98/13 0.117s} h6 {+1.44/18 0.590s}
+20. g5 {-1.11/20 0.644s} hxg5 {+1.30/17 0.670s} 21. hxg5 {-1.25/13 0.104s}
+Qd7 {+1.25/15 0.098s} 22. Qe4 {-1.18/15 0.077s} Qh3 {+1.29/13 0.095s}
+23. Re3 {-1.29/15 0.564s} Nd8 {+1.37/14 0.079s} 24. Nh4 {-1.43/14 0.185s}
+Bxe4 {+1.38/11 0.074s} 25. Rxh3 {-1.36/14 0.053s} Ba8 {+1.40/13 0.081s}
+26. f4 {-1.38/12 0.044s} Rc5 {+1.35/13 0.072s} 27. b4 {-1.40/12 0.070s}
+cxb3 {+1.41/13 0.097s} 28. Bxb3 {-1.39/13 0.034s} Bc6 {+1.46/14 0.150s}
+29. Rg3 {-1.33/17 0.216s} Ne6 {+1.89/15 0.082s} 30. Bxe6 {-1.36/13 0.031s}
+fxe6 {+1.43/17 0.163s} 31. Ne2 {-1.38/15 0.071s} e5 {+1.56/16 0.199s}
+32. fxe5 {-1.33/13 0.034s} Rxe5 {+1.71/15 0.086s} 33. Nd4 {-1.35/12 0.044s}
+Bd7 {+1.64/15 0.057s} 34. Ng2 {-1.32/14 0.050s} Rc8 {+1.73/14 0.062s}
+35. Rdd3 {-1.48/17 0.426s} Rcc5 {+1.46/16 0.212s} 36. Nf3 {-1.40/11 0.020s}
+Re4 {+1.53/19 0.290s} 37. Ne3 {-1.29/11 0.024s} Bb5 {+1.45/14 0.059s}
+38. c4 {-1.29/13 0.021s} Bxc4 {+1.54/14 0.102s} 39. Rc3 {-1.19/11 0.024s}
+Rf4 {+1.57/14 0.066s} 40. Nd2 {-1.08/11 0.031s} Ba2 {+1.66/15 0.059s}
+41. Rxc5 {-1.34/13 0.061s} dxc5 {+1.72/15 0.056s} 42. Ng2 {-1.30/14 0.177s}
+Rd4 {+1.65/18 0.263s} 43. Nf3 {-1.39/13 0.044s} Rd3 {+1.61/16 0.092s}
+44. Kf2 {-1.30/14 0.094s} Rxa3 {+1.61/15 0.074s} 45. Nf4 {-1.34/13 0.014s}
+Ra4 {+1.70/13 0.096s} 46. Nd3 {-1.56/16 0.231s} Ra5 {+1.80/15 0.057s}
+47. Rg4 {-1.43/13 0.084s} Bd5 {+2.17/18 0.276s} 48. Nde5 {-1.49/11 0.104s}
+Ra2+ {+2.17/15 0.083s} 49. Ke3 {-1.43/11 0.010s} Ra1 {+2.34/13 0.060s}
+50. Kd2 {-1.42/13 0.010s} a5 {+2.31/14 0.047s} 51. Ne1 {-1.62/18 0.124s}
+a4 {+2.31/14 0.050s} 52. Nc2 {-1.91/12 0.076s} Rh1 {+2.24/15 0.066s}
+53. Ne3 {-2.08/13 0.032s} Rh2+ {+2.38/18 0.265s} 54. Kc3 {-2.01/12 0.013s}
+Rh3 {+2.66/16 0.159s} 55. Kd2 {-2.00/12 0.020s} Bb3 {+2.64/16 0.096s}
+56. Nd3 {-2.19/16 0.116s} a3 {+2.31/16 0.098s} 57. Nxc5 {-2.59/10 0.020s}
+Bf7 {+2.30/13 0.033s} 58. Ra4 {-2.53/12 0.014s} a2 {+2.35/13 0.038s}
+59. Nd3 {-2.27/12 0.013s} Rh2+ {+2.48/13 0.064s} 60. Kc3 {-2.19/11 0.013s}
+Rh5 {+2.29/14 0.072s} 61. Ne5 {-2.26/17 0.052s} Rh3 {+3.00/13 0.049s}
+62. Kd2 {-3.12/14 0.170s} Rh1 {+3.03/12 0.044s} 63. Nxf7 {-2.31/12 0.009s}
+a1=R {+3.00/11 0.021s} 64. Rxa1 {-2.67/14 0.028s} Rxa1 {+3.07/12 0.032s}
+65. Nd8 {-2.54/14 0.029s} Ra8 {+2.95/15 0.072s} 66. Nc6 {-3.07/16 0.093s}
+Ra6 {+3.05/17 0.104s} 67. Ne5 {-3.01/14 0.024s} e6 {+3.08/14 0.022s}
+68. N3c4 {-2.94/14 0.039s} Ne7 {+3.07/15 0.021s} 69. Nd3 {-3.16/17 0.144s}
+Ra4 {+3.34/17 0.156s} 70. Kc3 {-2.80/12 0.010s} Nd5+ {+3.44/13 0.031s}
+71. Kd4 {-2.44/13 0.011s} Nb6 {+3.96/13 0.016s} 72. Nb2 {-4.10/12 0.055s}
+Ra2 {+4.02/14 0.026s} 73. Ke3 {-4.55/14 0.113s} Nxc4+ {+4.22/13 0.053s}
+74. Nxc4 {-4.55/12 0.096s} Rg2 {+4.34/12 0.049s} 75. Kf4 {-4.55/12 0.010s}
+Rf2+ {+4.34/14 0.019s} 76. Kg4 {-4.81/14 0.091s} Rf8 {+4.50/14 0.059s}
+77. Nd6 {-4.53/13 0.052s} Rd8 {+4.70/15 0.083s} 78. Ne4 {-4.88/15 0.030s}
+e5 {+4.95/16 0.170s} 79. Nc5 {-5.00/15 0.076s} Rd5 {+5.01/15 0.040s}
+80. Na6 {-4.97/12 0.016s} Kf7 {+5.01/10 0.040s} 81. Kf3 {-5.04/12 0.041s}
+Rd4 {+4.99/12 0.020s} 82. Nc5 {-4.98/13 0.025s} Ke7 {+5.00/13 0.023s}
+83. Kf2 {-4.97/17 0.099s} Kd6 {+5.11/17 0.182s} 84. Nb3 {-5.15/14 0.077s}
+Ke6 {+5.11/12 0.010s} 85. Ke3 {-5.12/15 0.023s} Kf5 {+5.25/15 0.131s}
+86. Nxd4+ {-5.20/14 0.030s} exd4+ {+6.08/12 0.007s} 87. Kxd4 {-5.11/11 0.046s}
+Kf4 {+5.62/16 0.051s} 88. Kd3 {-5.10/12 0.010s} Kxg5 {+5.51/15 0.024s}
+89. Ke3 {-5.03/12 0.011s} Kg4 {+5.36/19 0.026s} 90. Kf2 {-4.92/13 0.029s}
+Kh3 {+5.36/18 0.014s} 91. Kf3 {-5.03/14 0.047s} g5 {+5.53/15 0.022s}
+92. Kf2 {-5.09/15 0.096s} g4 {+5.48/16 0.015s} 93. Kg1 {-5.15/19 0.080s}
+Kg3 {+5.47/13 0.019s} 94. Kf1 {-5.15/15 0.037s} Kh3 {+5.64/18 0.078s}
+95. Kg1 {-5.14/14 0.052s} Kg3 {+5.55/13 0.021s} 96. Kf1 {-5.09/15 0.056s}
+Kh2 {+5.48/20 0.013s} 97. Ke2 {-5.13/15 0.016s} g3 {+5.41/18 0.082s}
+98. Kd3 {-5.13/18 0.064s} g2 {+5.54/18 0.103s} 99. Kc4 {-5.09/17 0.048s}
+g1=Q {+5.56/18 0.033s} 100. Kb5 {-4.78/15 0.007s} Qd4 {+6.58/15 0.098s}
+101. Kc6 {-4.55/15 0.013s} Kg2 {+6.53/13 0.034s} 102. Kc7 {-4.51/15 0.016s}
+Qd5 {+5.87/18 0.227s} 103. Kc8 {-M16/27 0.048s} Qd6 {+6.29/11 0.012s}
+104. Kb7 {-M16/36 0.013s} Kf1 {+6.22/10 0.010s}
+105. Ka7 {-M16/28 0.021s, Black wins by adjudication} 0-1`;
+
+    if (typeof Chess === "undefined") {
+      document.getElementById("moveLabel").textContent = "Impossible de charger chess.js";
+      document.getElementById("evalLabel").textContent = "Ouvre ce fichier avec internet actif, ou remplace le CDN par une copie locale.";
+      throw new Error("chess.js is not loaded");
+    }
+
+    const PIECES = {
+      p: { w: "♙", b: "♟" },
+      n: { w: "♘", b: "♞" },
+      b: { w: "♗", b: "♝" },
+      r: { w: "♖", b: "♜" },
+      q: { w: "♕", b: "♛" },
+      k: { w: "♔", b: "♚" }
+    };
+
+    const boardEl = document.getElementById("board");
+    const movesEl = document.getElementById("moves");
+    const moveLabel = document.getElementById("moveLabel");
+    const evalLabel = document.getElementById("evalLabel");
+    const slider = document.getElementById("slider");
+    const playBtn = document.getElementById("playBtn");
+
+    const startFen = PGN.match(/\[FEN "([^"]+)"\]/)[1];
+    const rawMoves = PGN
+      .replace(/\[[^\]]+\]/g, " ")
+      .replace(/\{[^}]*\}/g, " ")
+      .replace(/\d+\.(\.\.)?/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .split(" ")
+      .filter(token => token && !["0-1", "1-0", "1/2-1/2", "*"].includes(token));
+
+    const comments = Array.from(PGN.matchAll(/\{([^}]*)\}/g)).map(match => match[1]);
+    const game = new Chess(startFen);
+    const states = [{ fen: startFen, san: "Position initiale", comment: "" }];
+    const legalMoves = [];
+
+    for (let i = 0; i < rawMoves.length; i++) {
+      const move = game.move(rawMoves[i], { sloppy: true });
+      if (!move) break;
+      legalMoves.push(move);
+      states.push({
+        fen: game.fen(),
+        san: move.san,
+        comment: comments[i] || ""
+      });
+    }
+
+    let index = 0;
+    let timer = null;
+    slider.max = String(states.length - 1);
+
+    function renderBoard(fen, lastMove) {
+      const gameAtState = new Chess(fen);
+      const board = gameAtState.board();
+      boardEl.innerHTML = "";
+
+      for (let rank = 8; rank >= 1; rank--) {
+        for (let fileIndex = 0; fileIndex < 8; fileIndex++) {
+          const file = "abcdefgh"[fileIndex];
+          const squareName = `${file}${rank}`;
+          const row = 8 - rank;
+          const square = document.createElement("div");
+          const isLight = (row + fileIndex) % 2 === 0;
+          square.className = `sq ${isLight ? "light" : "dark"}`;
+          if (lastMove && (squareName === lastMove.from || squareName === lastMove.to)) {
+            square.classList.add("last");
+          }
+
+          const piece = board[row][fileIndex];
+          if (piece) {
+            const pieceEl = document.createElement("span");
+            pieceEl.className = "piece";
+            pieceEl.textContent = PIECES[piece.type][piece.color];
+            square.appendChild(pieceEl);
+          }
+
+          if (file === "a") {
+            const rankEl = document.createElement("span");
+            rankEl.className = "coord rank";
+            rankEl.textContent = rank;
+            square.appendChild(rankEl);
+          }
+          if (rank === 1) {
+            const fileEl = document.createElement("span");
+            fileEl.className = "coord file";
+            fileEl.textContent = file;
+            square.appendChild(fileEl);
+          }
+
+          boardEl.appendChild(square);
+        }
+      }
+    }
+
+    function renderMoves() {
+      movesEl.innerHTML = "";
+      legalMoves.forEach((move, i) => {
+        if (move.color === "w") {
+          const number = document.createElement("span");
+          number.className = "ply";
+          number.textContent = `${move.move_number || Math.floor(i / 2) + 8}.`;
+          movesEl.appendChild(number);
+        }
+
+        const item = document.createElement("span");
+        item.className = `ply ${index === i + 1 ? "active" : ""}`;
+        item.textContent = move.san;
+        item.onclick = () => setIndex(i + 1);
+        movesEl.appendChild(item);
+      });
+    }
+
+    function labelFor(idx) {
+      if (idx === 0) return "Position initiale";
+      const moveNo = Math.floor((idx - 1) / 2) + 8;
+      const side = idx % 2 === 1 ? "Blancs" : "Noirs";
+      return `${moveNo}${side === "Noirs" ? "..." : "."} ${states[idx].san}`;
+    }
+
+    function setIndex(next) {
+      index = Math.max(0, Math.min(states.length - 1, next));
+      const lastMove = index > 0 ? legalMoves[index - 1] : null;
+      renderBoard(states[index].fen, lastMove);
+      moveLabel.textContent = labelFor(index);
+      evalLabel.textContent = states[index].comment ? `Eval: ${states[index].comment}` : "";
+      slider.value = String(index);
+      renderMoves();
+      const active = movesEl.querySelector(".active");
+      if (active) active.scrollIntoView({ block: "nearest", inline: "nearest" });
+    }
+
+    function togglePlay() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+        playBtn.textContent = "Play";
+        return;
+      }
+      playBtn.textContent = "Pause";
+      timer = setInterval(() => {
+        if (index >= states.length - 1) {
+          togglePlay();
+        } else {
+          setIndex(index + 1);
+        }
+      }, 650);
+    }
+
+    document.getElementById("startBtn").onclick = () => setIndex(0);
+    document.getElementById("prevBtn").onclick = () => setIndex(index - 1);
+    document.getElementById("nextBtn").onclick = () => setIndex(index + 1);
+    playBtn.onclick = togglePlay;
+    slider.oninput = event => setIndex(Number(event.target.value));
+
+    setIndex(0);
+  </script>
+</body>
+</html>
