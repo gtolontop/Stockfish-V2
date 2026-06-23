@@ -581,6 +581,41 @@ Decision:
 
 - Rejected. The patch was expected to be a small performance simplification, but the first time-control smoke filter favored the current `rc2` baseline clearly.
 
+## Rejected Incremental: Stable Eval Depth Reduction
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/AdrianGHUB15/Stockfish`, branch `stableEvalReduction1-SS5`.
+- Fishtest active run observed on 2026-06-23 was negative.
+
+Patch summary:
+
+- Added a depth reduction when static evaluation is close to the value from five plies earlier and the current static evaluation improved by at least 25 cp.
+- This changed the bench signature, so it was treated as a functional search patch rather than a speed-only patch.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `2471057`
+- Nodes/second: `854445`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `25`
+- Losses: `18`
+- Draws: `21`
+- Points: `35.5 / 64`
+- Score: `55.47%`
+- Elo: `+38.15 +/- 73.74`
+
+Decision:
+
+- Rejected. The public run was already negative, and the local smoke filter clearly favored the current `rc2` baseline.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

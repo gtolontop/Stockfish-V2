@@ -393,3 +393,35 @@ Smoke result from the `Base` / rc2-nopgo perspective:
 Decision:
 
 - Rejected. The smoke filter favored the current rc2 baseline clearly, so no longer UHO test was run.
+
+## Incremental Rejection: Stable Eval Depth Reduction
+
+Purpose:
+
+- Test the Fishtest-active `stableEvalReduction1-SS5` search change over the current local `stockfish-20-rc2` source.
+- Stop at smoke because the public active run was already negative.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the stable-eval depth reduction.
+
+Bench:
+
+- Nodes searched: `2471057`
+- Nodes/second: `854445`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062338`
+- Games: `64`
+- Wins: `25`
+- Losses: `18`
+- Draws: `21`
+- Score: `55.47%`
+- Elo: `+38.15 +/- 73.74`
+
+Decision:
+
+- Rejected. The current rc2 baseline won the smoke filter clearly, so no longer UHO test was run.
