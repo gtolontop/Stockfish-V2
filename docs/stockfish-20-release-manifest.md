@@ -1,0 +1,81 @@
+# Stockfish 20 Fork Release Manifest
+
+Date: 2026-06-23
+Branch: `fix/stockfish-20-release`
+Fork remote: `https://github.com/gtolontop/Stockfish-V2`
+Official remote push URL: `DISABLED`
+
+## Release Scope
+
+This is a fork-only Stockfish 20 release candidate. It is not an official upstream Stockfish release and must not be pushed to or opened as a pull request against `official-stockfish/Stockfish`.
+
+The official Stockfish download page still lists Stockfish 18 as the public stable release checked during this release pass:
+
+- `https://stockfishchess.org/download/`
+
+## Selected Artifact
+
+- Name: `stockfish-20-rc2`
+- Binary: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-x86-64-avx512icl`
+- Build type: PGO
+- Build architecture: `ARCH=native`, selected as `x86-64-avx512icl`
+- Network: `nn-71d6d32cb962.nnue`
+- UCI id: `Stockfish 20`
+- SHA256: `5032BE17BCA6C30115A46D5F8511DFDF07E3F34604B064D6E11FF289D67F7B61`
+
+## Reference Binaries
+
+- `stockfish-20-rc2-nopgo`
+  - Path: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+  - SHA256: `4803AF8F051A0EFEEC27F226C18199BCD086E41B9C9B5AE3BD6BDEDB5BFFA390`
+- Saved current-development baseline
+  - Path: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-base`
+  - SHA256: `1ACAABC141F266EDFB6A8F2AAC063AC82CC46AE37FECB35454E3229B19006351`
+- Official Stockfish 18 local build
+  - Path: `C:/Users/teamr/Desktop/stockfish/Stockfish-sf18/src/stockfish`
+  - SHA256: `623F4347A71C282877C20929F602AC8871CB83B993952DA2C0F69EE3BF5EDECC`
+
+## Source State
+
+- Release documentation HEAD when this manifest was created: `b80b06cbb771ea03229a577d3ab908353bdb2726`
+- `origin/fix/stockfish-20-release` matched local HEAD at verification time.
+- `official/master` verification point: `74a0a73715322608332038f7c0151ddf0609a59a`
+
+The selected artifact was documented from source commit `b070c897`, with the accepted engine patch:
+
+- `03b95f10 Add lazy simple evaluation shortcut`
+
+## Validation Highlights
+
+Stockfish 20 rc2 PGO versus saved current-development baseline:
+
+- `TC=5+0.05`, `128` games, seed `2026062320`: baseline perspective `23W / 36L / 69D`, score `44.92%`.
+- `TC=5+0.05`, `128` games, seed `2026062361`: baseline perspective `22W / 44L / 62D`, score `41.41%`.
+
+Stockfish 20 rc2 PGO versus official Stockfish 18:
+
+- Tiny smoke book, `32` games: Stockfish 18 perspective `2W / 8L / 22D`, score `40.62%`.
+- Official UHO, sample size `256`, `128` games: Stockfish 18 perspective `35W / 42L / 51D`, score `47.27%`.
+- Official UHO, sample size `512`, `TC=5+0.05`, `128` games, seed `2026062362`: Stockfish 18 perspective `33W / 39L / 56D`, score `47.66%`.
+- Official UHO, sample size `1024`, `20000` nodes, `256` games, seed `2026062368`: Stockfish 18 perspective `73W / 94L / 89D`, score `45.90%`.
+
+## Rejected Candidate Coverage
+
+The experiment log records rejected or not-applied alternatives, including:
+
+- ProbCut depth when improving.
+- AVX512 move rank buffer.
+- Early TT prefetch.
+- Quiet king threat move generation.
+- Raw reduction value.
+- TT miss data cleanup.
+- Multiple Fishtest-active search, history, prefetch, NNUE, and SMP candidates.
+
+See:
+
+- `docs/stockfish-20-experiments.md`
+- `docs/stockfish-20-test-results.md`
+
+## Release Judgment
+
+`stockfish-20-rc2` remains the selected fork-only release candidate. The artifact identity, SHA256, reference binaries, fork remote safety, and validation evidence are documented. This is still not an official upstream Stockfish release and not a formal Fishtest proof.
