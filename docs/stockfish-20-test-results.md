@@ -555,6 +555,47 @@ Decision:
 
 - No build or match was run for these PRs. None is expected to improve the fork release candidate against `stockfish-20-rc2`.
 
+## Incremental Rejection: TT Miss Data Cleanup
+
+Purpose:
+
+- Test official PR `#6835`, `Remove redundant TT miss data reassignments`, because it has passed upstream non-regression STC and reported a local speedup on the official base.
+- Source: `https://github.com/official-stockfish/Stockfish/pull/6835`
+- Branch: `https://github.com/FauziAkram/Stockfish`, branch `ttmiss`
+- Isolated commit: `995fd5480e6bc852846f3f1cf878e5b3d60c04e4`
+
+Public evidence:
+
+- STC LLR: `5.07 (-2.94,2.94) <-1.75,0.25>`
+- Upstream discussion reports a local bench speedup, but the PR is still labeled no-functional-change.
+
+Patch notes:
+
+- Removed redundant `ttHit` guards for `ttData.move` and `ttData.value` in search and qsearch.
+- Added TT miss asserts before using returned TT data.
+- Made `TranspositionTable::probe()` return default miss data when an unoccupied entry has a matching 16-bit key.
+
+Bench:
+
+- Command: `./stockfish bench 16 1 13 default depth`
+- Nodes searched: `3106469`
+- Nodes/second: `868213`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062366`
+- Games: `64`
+- Wins: `29`
+- Losses: `20`
+- Draws: `15`
+- Score: `57.03%`
+- Elo: `+49.18 +/- 76.87`
+
+Decision:
+
+- Rejected. The smoke filter favored the current `stockfish-20-rc2` source, so no longer UHO test or PGO artifact was run.
+
 ## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
 
 Purpose:

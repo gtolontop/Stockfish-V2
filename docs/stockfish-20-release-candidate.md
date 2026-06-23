@@ -23,6 +23,13 @@ id name Stockfish 20
 id author the Stockfish developers (see AUTHORS file)
 ```
 
+Artifact recheck:
+
+- Rechecked on 2026-06-23 after subsequent rejected experiments.
+- SHA256 still matches: `5032BE17BCA6C30115A46D5F8511DFDF07E3F34604B064D6E11FF289D67F7B61`.
+- UCI identity still reports `id name Stockfish 20`.
+- Local reference binaries are present: `stockfish-20-rc2-nopgo`, `stockfish-base`, and official `Stockfish 18`.
+
 ## Build Command
 
 ```bash

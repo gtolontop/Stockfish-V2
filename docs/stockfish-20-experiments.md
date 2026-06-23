@@ -986,6 +986,37 @@ Decision:
 
 - Not applied. These PRs may be useful upstream maintenance, but they do not make the current fork release candidate measurably stronger and would force a new artifact validation cycle without an expected Elo gain.
 
+## Rejected Incremental: TT Miss Data Cleanup
+
+Source:
+
+- Official open PR: `https://github.com/official-stockfish/Stockfish/pull/6835`
+- Upstream title: `Remove redundant TT miss data reassignments`
+- Branch tested locally: `https://github.com/FauziAkram/Stockfish`, branch `ttmiss`
+- Isolated commit tested locally: `995fd5480e6bc852846f3f1cf878e5b3d60c04e4`
+
+Public evidence:
+
+- Upstream PR body reports passed non-regression STC with LLR `5.07 (-2.94,2.94) <-1.75,0.25>`.
+- Upstream discussion reports a local speedup on the official base, but the PR is still described as no functional change.
+
+Patch summary:
+
+- Let `value_from_tt()` handle `VALUE_NONE` after TT misses.
+- Add asserts that TT miss data is empty.
+- Treat an unoccupied TT entry matching the 16-bit key as a miss with default `TTData`.
+
+Local result:
+
+- Build passed with `ARCH=native`.
+- Bench nodes searched: `3106469`.
+- Bench nodes/second: `868213`.
+- Smoke seed `2026062366`, from the `rc2-nopgo` baseline perspective: `29W / 20L / 15D`, score `57.03%`, Elo `+49.18 +/- 76.87`.
+
+Decision:
+
+- Rejected as a local incremental patch over `rc2`. The smoke filter favored the current release-candidate source clearly enough to skip UHO and PGO follow-up.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
