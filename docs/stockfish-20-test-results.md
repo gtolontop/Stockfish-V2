@@ -473,6 +473,30 @@ Decision:
 
 - Rejected. The smoke filter favored the current `stockfish-20-rc2` source, so no longer UHO test or PGO artifact was run.
 
+## Applicability Check: Quiet King Threat Move Generation
+
+Purpose:
+
+- Inspect official PR `#6288`, `Use threats in quiet move generation and simplify castling check in pos.legal()`, because its upstream body reports passed STC and LTC.
+- Source: `https://github.com/official-stockfish/Stockfish/pull/6288`
+- Branch: `https://github.com/ces42/Stockfish`, branch `qks-rebase`
+- Head commit inspected: `7012ded3994336176aa8affb50957d8f4809c5f1`
+
+Public evidence:
+
+- STC LLR: `2.97 (-2.94,2.94) <-1.75,0.25>`
+- LTC LLR: `2.95 (-2.94,2.94) <-1.75,0.25>`
+
+Local result:
+
+- The PR is marked `dirty` by GitHub and maintainers described it as outdated.
+- The branch-level diff against current master is too stale to use directly.
+- The isolated commit stack touches six source files, but it conflicted immediately in `src/movepick.cpp` when tested over the current `stockfish-20-rc2` source.
+
+Decision:
+
+- Not applied. No build or match was run because the upstream candidate was not cleanly reproducible on the fork release source.
+
 ## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
 
 Purpose:

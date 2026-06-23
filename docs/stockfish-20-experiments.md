@@ -918,6 +918,30 @@ Decision:
 
 - Rejected as a local incremental patch over `rc2`. The smoke filter favored the current release-candidate source, so no UHO or PGO follow-up was run.
 
+## Not Applied: Quiet King Threat Move Generation
+
+Source:
+
+- Official open PR: `https://github.com/official-stockfish/Stockfish/pull/6288`
+- Upstream title: `Use threats in quiet move generation and simplify castling check in pos.legal()`
+- Branch inspected locally: `https://github.com/ces42/Stockfish`, branch `qks-rebase`
+- Head commit inspected: `7012ded3994336176aa8affb50957d8f4809c5f1`
+
+Public evidence:
+
+- Upstream PR body reports passed STC with LLR `2.97 (-2.94,2.94) <-1.75,0.25>`.
+- Upstream PR body reports passed LTC with LLR `2.95 (-2.94,2.94) <-1.75,0.25>`.
+
+Local applicability check:
+
+- GitHub marks the PR as `dirty`, and maintainers noted it is outdated.
+- The full branch diff against current master is dominated by base drift, but the isolated patch stack reduces to six source files: `movegen.cpp`, `movegen.h`, `movepick.cpp`, `movepick.h`, `position.cpp`, and `position.h`.
+- Attempting the isolated stack over the current `stockfish-20-rc2` source conflicted immediately in `src/movepick.cpp` on the quiet king threat path.
+
+Decision:
+
+- Not applied. Because the PR is stale/dirty and the local stack does not apply cleanly, adapting it manually would create a new unproven patch rather than testing the upstream candidate. Revisit only if upstream rebases it or if a dedicated local rewrite is planned with full validation.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
