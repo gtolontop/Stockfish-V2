@@ -281,6 +281,71 @@ Decision:
 
 - Rejected. The smoke filter favored the current rc2 baseline, the two short UHO checks netted out to practical neutrality, and the public LTC run was already negative. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
 
+## Incremental Rejection: Earlier TT Prefetch
+
+Purpose:
+
+- Test the Fishtest-active `pfearly` performance change over the current local `stockfish-20-rc2` source.
+- Apply only the active-run commit, because the public branch had advanced beyond the run currently being evaluated.
+
+Source:
+
+- Repository: `https://github.com/ces42/Stockfish`
+- Branch: `pfearly`
+- Isolated commit: `8a8e512ce9084834dd5a426cdbd7d011910ff7a7`
+- Public Fishtest status observed on 2026-06-23: negative.
+
+Patch summary:
+
+- Moved the transposition-table prefetch earlier in `Position::do_move()`.
+- Added a second TT prefetch after pawn moves reset `rule50`.
+- The bench signature stayed unchanged, so this was tested as a no-functional-change performance patch.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the earlier TT prefetch patch.
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `915552`
+- Signature matched the current rc2 source.
+
+First smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062344`
+- Games: `64`
+- Wins: `22`
+- Losses: `25`
+- Draws: `17`
+- Score: `47.66%`
+- Elo: `-16.30 +/- 72.34`
+
+Second smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062345`
+- Games: `64`
+- Wins: `23`
+- Losses: `20`
+- Draws: `21`
+- Score: `52.34%`
+- Elo: `+16.30 +/- 61.64`
+
+Combined smoke:
+
+- Games: `128`
+- Wins: `45`
+- Losses: `45`
+- Draws: `38`
+- Score: `50.00%`
+
+Decision:
+
+- Rejected. The two smoke seeds canceled out exactly, bench speed was not improved locally, and the public run was negative. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
+
 ## Incremental Rejection: Restrict Singular Extension Depth Increase
 
 Purpose:

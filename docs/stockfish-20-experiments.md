@@ -661,6 +661,40 @@ Decision:
 
 - Rejected. The local smoke filter favored the current `rc2` baseline, the two UHO checks were effectively neutral, and the public LTC run was negative.
 
+## Rejected Incremental: Earlier TT Prefetch
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/ces42/Stockfish`, branch `pfearly`.
+- Isolated active-run commit: `8a8e512ce9084834dd5a426cdbd7d011910ff7a7`.
+- Fishtest active run observed on 2026-06-23 was negative.
+
+Patch summary:
+
+- Moved the transposition-table prefetch earlier in `Position::do_move()`.
+- Added a second TT prefetch after pawn moves reset `rule50`.
+- Bench signature was unchanged, so the patch was treated as a performance-only change.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `915552`
+- Bench signature matched the current `rc2` source.
+
+Smoke checks from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Seed `2026062344`: `22W / 25L / 17D`, score `47.66%`, Elo `-16.30 +/- 72.34`.
+- Seed `2026062345`: `23W / 20L / 21D`, score `52.34%`, Elo `+16.30 +/- 61.64`.
+- Combined: `45W / 45L / 38D`, score `50.00%`.
+
+Decision:
+
+- Rejected. The local smoke checks canceled out exactly, local bench speed was not improved, and the public run was already negative.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
