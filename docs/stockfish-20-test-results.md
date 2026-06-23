@@ -92,6 +92,45 @@ Interpretation:
 - The confidence interval is still wide, so this is a positive local validation rather than a formal strength proof.
 - The result supports keeping the current release candidate, but any new engine tweak still needs candidate-vs-current-baseline testing before commit.
 
+## Official UHO Sample: Stockfish 18 vs Stockfish 20 RC2 PGO
+
+Purpose:
+
+- Validate the final `stockfish-20-rc2` PGO artifact directly against official `sf_18` at time control.
+- Use a larger deterministic sample than the first Stockfish 18 comparison.
+
+Builds:
+
+- `Base`: local official `sf_18` build, `C:/Users/teamr/Desktop/stockfish/Stockfish-sf18/src/stockfish`, UCI id `Stockfish 18`.
+- `New`: PGO artifact `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-x86-64-avx512icl`, UCI id `Stockfish 20`.
+
+Match command summary:
+
+- Runner: Fastchess.
+- Time control: `5+0.05`.
+- Opening sample: `uho_lichess_4852_sample_512.epd`.
+- Threads: `1`.
+- Hash: `16 MB`.
+- Rounds: `64`.
+- Repeat colors: yes.
+- Games: `128`.
+- Seed: `2026062362`.
+
+Result from the `Base` / Stockfish 18 perspective:
+
+- Wins: `33`.
+- Losses: `39`.
+- Draws: `56`.
+- Points: `61.0 / 128`.
+- Score: `47.66%`.
+- Elo: `-16.30 +/- 31.83`.
+- LOS for `Base`: `15.67%`.
+
+Interpretation:
+
+- The final `stockfish-20-rc2` PGO artifact scores ahead of Stockfish 18 in this local time-control UHO validation.
+- The edge is moderate, so this is a release-candidate support result rather than a formal crush proof.
+
 ## Official UHO Sample: Current Dev Baseline vs Stockfish 20 RC2 PGO
 
 Purpose:

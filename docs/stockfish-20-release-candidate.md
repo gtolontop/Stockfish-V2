@@ -69,6 +69,7 @@ Stockfish 18 comparison using official UHO Lichess sample:
 - Result from Stockfish 18 perspective: `35W / 42L / 51D`
 - Stockfish 18 score: `47.27%`
 - Elo from Stockfish 18 perspective: `-19.02 +/- 37.97`
+- `stockfish-20-rc2` final artifact repeat with sample size `512`, `TC=5+0.05`, `128` games, seed `2026062362`: from Stockfish 18 perspective `33W / 39L / 56D`, score `47.66%`, Elo `-16.30 +/- 31.83`.
 
 ## Release Judgment
 
