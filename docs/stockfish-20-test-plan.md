@@ -91,6 +91,22 @@ Preferred once installed:
 - Alternative: `cutechess-cli`.
 - Fallback: local Python UCI harness for smoke match testing only.
 
+Local scripts:
+
+```bash
+# Tiny built-in smoke book
+bash tests/run_fastchess_smoke.sh
+
+# Deterministic sample from official-stockfish/books UHO_Lichess_4852_v1
+bash tests/run_fastchess_official.sh
+```
+
+The official-book runner expects `official-stockfish/books` cloned next to this repository:
+
+```bash
+git clone https://github.com/official-stockfish/books.git ../books
+```
+
 5. Promotion test
 
 Before branding a release candidate, run a larger paired match with:
