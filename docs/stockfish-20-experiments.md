@@ -942,6 +942,37 @@ Decision:
 
 - Not applied. Because the PR is stale/dirty and the local stack does not apply cleanly, adapting it manually would create a new unproven patch rather than testing the upstream candidate. Revisit only if upstream rebases it or if a dedicated local rewrite is planned with full validation.
 
+## Rejected Incremental: Raw Reduction Value
+
+Source:
+
+- Official open PR: `https://github.com/official-stockfish/Stockfish/pull/6577`
+- Upstream title: `Simplification - Use raw reduction value`
+- Branch tested locally: `https://github.com/FauziAkram/Stockfish`, branch `prrisPR`
+- Isolated commit tested locally: `cd807ff2811fbd22e7d293124edbe05b8d127047`
+
+Public evidence:
+
+- Upstream PR body reports passed STC with LLR `2.95 (-2.94,2.94) <-1.75,0.25>`.
+- Upstream PR body reports passed LTC with LLR `2.94 (-2.94,2.94) <-1.75,0.25>`.
+
+Patch summary:
+
+- Store the raw reduction value in `ss->reduction` instead of the clamped depth delta.
+- Compare hindsight and IIR thresholds against raw reduction units (`3200`, `2000`, `3072`) instead of reduced-depth plies.
+- The local application kept the fork's existing `!ss->followPV` guard in the IIR condition.
+
+Local result:
+
+- Build passed with `ARCH=native`.
+- Bench nodes searched: `2442842`.
+- Bench nodes/second: `874004`.
+- Smoke seed `2026062365`, from the `rc2-nopgo` baseline perspective: `25W / 20L / 19D`, score `53.91%`, Elo `+27.20 +/- 80.25`.
+
+Decision:
+
+- Rejected as a local incremental patch over `rc2`. Despite strong public STC/LTC evidence on the upstream base, the local smoke filter favored the current release-candidate source, so no UHO or PGO follow-up was run.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

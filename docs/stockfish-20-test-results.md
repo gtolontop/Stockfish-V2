@@ -497,6 +497,47 @@ Decision:
 
 - Not applied. No build or match was run because the upstream candidate was not cleanly reproducible on the fork release source.
 
+## Incremental Rejection: Raw Reduction Value
+
+Purpose:
+
+- Test official PR `#6577`, `Simplification - Use raw reduction value`, because its upstream body reports passed STC and LTC.
+- Source: `https://github.com/official-stockfish/Stockfish/pull/6577`
+- Branch: `https://github.com/FauziAkram/Stockfish`, branch `prrisPR`
+- Isolated commit: `cd807ff2811fbd22e7d293124edbe05b8d127047`
+
+Public evidence:
+
+- STC LLR: `2.95 (-2.94,2.94) <-1.75,0.25>`
+- LTC LLR: `2.94 (-2.94,2.94) <-1.75,0.25>`
+
+Patch notes:
+
+- Changed hindsight reduction thresholds from `3`/`2` plies to raw reduction thresholds `3200`/`2000`.
+- Added `priorReduction <= 3072` to the IIR guard while preserving the fork's existing `!ss->followPV` guard.
+- Stored raw `r` in `ss->reduction` instead of `newDepth - d`.
+
+Bench:
+
+- Command: `./stockfish bench 16 1 13 default depth`
+- Nodes searched: `2442842`
+- Nodes/second: `874004`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062365`
+- Games: `64`
+- Wins: `25`
+- Losses: `20`
+- Draws: `19`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 80.25`
+
+Decision:
+
+- Rejected. The smoke filter favored the current `stockfish-20-rc2` source, so no longer UHO test or PGO artifact was run.
+
 ## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
 
 Purpose:
