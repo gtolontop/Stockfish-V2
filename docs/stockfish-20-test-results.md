@@ -417,6 +417,52 @@ Decision:
 
 - Rejected. The current rc2 baseline won the smoke filter, so no longer UHO test was run. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
 
+## Incremental Rejection: Const StateInfo Position Cleanup
+
+Purpose:
+
+- Test the Fishtest-active `codex-opt-remarks` no-functional-change performance patch over the current local `stockfish-20-rc2` source.
+- Require at least a clear local smoke or speed signal before considering a larger `position.*` cleanup for the release candidate.
+
+Source:
+
+- Repository: `https://github.com/ces42/Stockfish`
+- Branch: `codex-opt-remarks`
+- Isolated commits: `ac875f71` and `7737f75c6eaa85afd2807d8257f350079f4896cd`
+- Public Fishtest status observed on 2026-06-23: negative.
+
+Patch summary:
+
+- Converted `Position::st` and related repetition-walk pointers to `const StateInfo*`.
+- Refactored several `Position` helpers to receive explicit `StateInfo& state`.
+- Signature stayed unchanged, so this was tested as a performance-only patch.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the const-`StateInfo` position cleanup.
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `875061`
+- Signature matched the current rc2 source.
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062347`
+- Games: `64`
+- Wins: `19`
+- Losses: `20`
+- Draws: `25`
+- Score: `49.22%`
+- Elo: `-5.43 +/- 67.27`
+
+Decision:
+
+- Rejected. The smoke result was effectively neutral, local bench speed did not improve, and the public run was negative. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
+
 ## Incremental Rejection: Restrict Singular Extension Depth Increase
 
 Purpose:

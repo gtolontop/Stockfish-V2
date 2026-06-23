@@ -754,6 +754,45 @@ Decision:
 
 - Rejected. The local smoke filter favored the current `rc2` baseline, matching the negative direction of the public run.
 
+## Rejected Incremental: Const StateInfo Position Cleanup
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/ces42/Stockfish`, branch `codex-opt-remarks`.
+- Isolated commits tested: `ac875f71` and `7737f75c6eaa85afd2807d8257f350079f4896cd`.
+- Fishtest active run observed on 2026-06-23 was negative.
+
+Patch summary:
+
+- Converted `Position::st` and repetition-walk state pointers to `const StateInfo*`.
+- Refactored several `Position` helpers to operate on explicit `StateInfo& state`.
+- Bench signature was unchanged, so this was treated as a no-functional-change performance patch.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `875061`
+- Bench signature matched the current `rc2` source.
+
+Smoke result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Seed: `2026062347`
+- Games: `64`
+- Wins: `19`
+- Losses: `20`
+- Draws: `25`
+- Points: `31.5 / 64`
+- Score: `49.22%`
+- Elo: `-5.43 +/- 67.27`
+
+Decision:
+
+- Rejected. The local smoke result was effectively neutral, local bench speed was not improved, and the public run was negative.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
