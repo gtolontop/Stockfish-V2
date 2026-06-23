@@ -11,6 +11,7 @@ out_dir=${OUT_DIR:-"$parent_dir/match-results"}
 rounds=${ROUNDS:-64}
 concurrency=${CONCURRENCY:-4}
 nodes=${NODES:-20000}
+tc=${TC:-}
 hash=${HASH:-16}
 threads=${THREADS:-1}
 seed=${SEED:-20260623}
@@ -20,10 +21,15 @@ openings=$("$repo_root/tests/prepare_official_openings.sh")
 
 mkdir -p "$out_dir"
 
+limit_args=(nodes="$nodes")
+if [[ -n "$tc" ]]; then
+  limit_args=(tc="$tc")
+fi
+
 "$fastchess" \
   -engine name=Base cmd="$base_engine" dir="$repo_root" \
   -engine name=New cmd="$new_engine" dir="$repo_root" \
-  -each proto=uci nodes="$nodes" option.Hash="$hash" option.Threads="$threads" \
+  -each proto=uci "${limit_args[@]}" option.Hash="$hash" option.Threads="$threads" \
   -openings file="$openings" format=epd order=random \
   -srand "$seed" \
   -rounds "$rounds" \
