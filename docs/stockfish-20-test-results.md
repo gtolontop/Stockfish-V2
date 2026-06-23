@@ -463,6 +463,106 @@ Decision:
 
 - Rejected. The smoke result was effectively neutral, local bench speed did not improve, and the public run was negative. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
 
+## Incremental Acceptance: Optimized Move Prefetch
+
+Purpose:
+
+- Test the Fishtest-active `opt-prefetch` no-functional-change performance patch over the current local `stockfish-20-rc2` source.
+- Require repeated local match confirmation because the public active run was slightly negative and local bench speed was noisy.
+
+Source:
+
+- Repository: `https://github.com/ces42/Stockfish`
+- Branch: `opt-prefetch`
+- Isolated commits: `f7399c92`, `2832774e`, and `b592d86e8bd8fcb21fc1597ad0c0a2f03efdbd09`
+- Public Fishtest status observed on 2026-06-23: slightly negative.
+
+Patch summary:
+
+- Added `Position::prefetch_move()` to compute and prefetch the likely next transposition-table entry before legality checking.
+- Made `adjust_key50()` parameterized for after-move use.
+- Kept the implementation approximate for rare special moves, where the prefetch may land on an unused line.
+- The bench signature stayed unchanged, so this was tested as a performance-only patch.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus optimized move prefetch.
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `864589`
+- Signature matched the current rc2 source.
+
+First smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062348`
+- Games: `64`
+- Wins: `18`
+- Losses: `24`
+- Draws: `22`
+- Score: `45.31%`
+- Elo: `-32.67 +/- 64.13`
+
+Second smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062349`
+- Games: `64`
+- Wins: `20`
+- Losses: `23`
+- Draws: `21`
+- Score: `47.66%`
+- Elo: `-16.30 +/- 65.38`
+
+Combined smoke:
+
+- Games: `128`
+- Wins: `38`
+- Losses: `47`
+- Draws: `43`
+- Score: `46.48%`
+- Result favors the new engine.
+
+First official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_128.epd`
+- Seed: `2026062350`
+- Games: `32`
+- Wins: `6`
+- Losses: `9`
+- Draws: `17`
+- Score: `45.31%`
+- Elo: `-32.67 +/- 63.06`
+
+Second official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_128.epd`
+- Seed: `2026062351`
+- Games: `32`
+- Wins: `7`
+- Losses: `9`
+- Draws: `16`
+- Score: `46.88%`
+- Elo: `-21.74 +/- 51.61`
+
+Combined UHO:
+
+- Games: `64`
+- Wins: `13`
+- Losses: `18`
+- Draws: `33`
+- Score: `46.09%`
+- Result favors the new engine.
+
+Decision:
+
+- Accepted as a source-level candidate. Both smoke seeds and both short UHO seeds favored the new engine, although this still requires PGO artifact validation before replacing the saved `stockfish-20-rc2` release artifact.
+
 ## Incremental Rejection: Restrict Singular Extension Depth Increase
 
 Purpose:

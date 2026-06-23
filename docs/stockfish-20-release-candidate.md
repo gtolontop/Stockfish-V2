@@ -15,6 +15,12 @@ Fork remote: `https://github.com/gtolontop/Stockfish-V2`
 - Network: `nn-71d6d32cb962.nnue`
 - SHA256: `5032BE17BCA6C30115A46D5F8511DFDF07E3F34604B064D6E11FF289D67F7B61`
 
+## Post-rc2 Source Candidate
+
+- The saved release artifact remains `stockfish-20-rc2`.
+- The current fork source has one additional accepted local candidate after `rc2`: optimized move prefetch.
+- This post-rc2 source candidate must pass PGO artifact validation before replacing the saved `stockfish-20-rc2` binary.
+
 UCI identity:
 
 ```text

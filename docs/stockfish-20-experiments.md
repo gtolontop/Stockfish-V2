@@ -793,8 +793,49 @@ Decision:
 
 - Rejected. The local smoke result was effectively neutral, local bench speed was not improved, and the public run was negative.
 
+## Accepted Source Candidate: Optimized Move Prefetch
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/ces42/Stockfish`, branch `opt-prefetch`.
+- Isolated commits tested: `f7399c92`, `2832774e`, and `b592d86e8bd8fcb21fc1597ad0c0a2f03efdbd09`.
+- Fishtest active run observed on 2026-06-23 was slightly negative, so this required local confirmation before acceptance.
+
+Patch summary:
+
+- Added `Position::prefetch_move()` to estimate and prefetch the transposition-table line for the next move earlier in the search move loop.
+- Made `adjust_key50()` parameterized for after-move use.
+- Left rare special moves to harmlessly prefetch an unused line instead of reproducing all move-key edge cases.
+- Bench signature was unchanged, so this was treated as a no-functional-change performance patch.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `864589`
+- Bench signature matched the current `rc2` source.
+
+Smoke checks from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Seed `2026062348`: `18W / 24L / 22D`, score `45.31%`, Elo `-32.67 +/- 64.13`.
+- Seed `2026062349`: `20W / 23L / 21D`, score `47.66%`, Elo `-16.30 +/- 65.38`.
+- Combined: `38W / 47L / 43D`, score `46.48%`, favoring the new engine.
+
+Official UHO short checks from the `rc2-nopgo` baseline perspective:
+
+- Seed `2026062350`: `6W / 9L / 17D`, score `45.31%`, Elo `-32.67 +/- 63.06`.
+- Seed `2026062351`: `7W / 9L / 16D`, score `46.88%`, Elo `-21.74 +/- 51.61`.
+- Combined: `13W / 18L / 33D`, score `46.09%`, favoring the new engine.
+
+Decision:
+
+- Accepted as a source-level candidate over the current `rc2` source because both smoke seeds and both UHO seeds favored the new engine. This still requires PGO artifact validation before replacing the saved `stockfish-20-rc2` release artifact.
+
 ## Current Status
 
-- One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
-- The fork release candidate remains `stockfish-20-rc2`.
+- Two source-level changes have been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut and optimized move prefetch.
+- The saved fork release artifact remains `stockfish-20-rc2` until a PGO build of the new source candidate is validated.
 - Future experiments should target different mechanisms instead of retuning these local history constants.
