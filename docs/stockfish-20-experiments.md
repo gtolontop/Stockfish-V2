@@ -695,6 +695,27 @@ Decision:
 
 - Rejected. The local smoke checks canceled out exactly, local bench speed was not improved, and the public run was already negative.
 
+## Not Applied: LTC SPSA Eval Scaling Constants
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/TonyCongqianWang/Stockfish`, branch `tune/rm_psqt_calc3`.
+- Active-run commit inspected: `7bafc26d1ebac5f371bd59b26ef7a890eb2b2ac5`.
+- Fishtest run observed on 2026-06-23 is an LTC tuning/SPSA run, not a direct SPRT pass.
+
+Patch summary:
+
+- The inspected commit retunes `VAL_NNUE_LINEAR`, `VAL_OPT_LINEAR`, `VAL_OPT_QUAD`, and `VAL_OPT_SHAPE`.
+
+Local compatibility check:
+
+- The current `stockfish-20-rc2` source no longer contains these `VAL_*` tuning constants.
+- The relevant eval and optimism formulas are already represented differently in `src/evaluate.cpp` and `src/search.cpp`.
+
+Decision:
+
+- Not applied. Forcing the obsolete constants into the current fork would be a new hand-designed patch rather than an isolated upstream/Fishtest experiment.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

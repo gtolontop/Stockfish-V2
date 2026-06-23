@@ -346,6 +346,33 @@ Decision:
 
 - Rejected. The two smoke seeds canceled out exactly, bench speed was not improved locally, and the public run was negative. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
 
+## Not Applied: LTC SPSA Eval Scaling Constants
+
+Purpose:
+
+- Inspect the Fishtest-active `tune/rm_psqt_calc3` tuning branch before spending local build/test time.
+- Avoid re-testing branches whose patch no longer applies cleanly to the current local `stockfish-20-rc2` source.
+
+Source:
+
+- Repository: `https://github.com/TonyCongqianWang/Stockfish`
+- Branch: `tune/rm_psqt_calc3`
+- Inspected commit: `7bafc26d1ebac5f371bd59b26ef7a890eb2b2ac5`
+- Public Fishtest status observed on 2026-06-23: LTC SPSA/tuning run, not a direct SPRT pass.
+
+Patch summary:
+
+- Retunes `VAL_NNUE_LINEAR`, `VAL_OPT_LINEAR`, `VAL_OPT_QUAD`, and `VAL_OPT_SHAPE` in older eval/optimism scaling code.
+
+Local compatibility result:
+
+- The current local `stockfish-20-rc2` source does not contain those `VAL_*` tuning constants.
+- The current `src/evaluate.cpp` and `src/search.cpp` use the newer direct formulas for NNUE/optimism blending.
+
+Decision:
+
+- Not applied. The branch is not a clean isolated patch for the current fork; testing it would require inventing a fresh retune rather than applying the inspected Fishtest change.
+
 ## Incremental Rejection: Restrict Singular Extension Depth Increase
 
 Purpose:
