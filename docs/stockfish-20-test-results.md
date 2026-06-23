@@ -131,6 +131,45 @@ Interpretation:
 - The final `stockfish-20-rc2` PGO artifact scores ahead of Stockfish 18 in this local time-control UHO validation.
 - The edge is moderate, so this is a release-candidate support result rather than a formal crush proof.
 
+## Fixed-Node Official UHO Sample: Stockfish 18 vs Stockfish 20 RC2 PGO
+
+Purpose:
+
+- Add a larger fixed-node validation of the final `stockfish-20-rc2` PGO artifact against official `sf_18`.
+- Reduce wall-clock noise by using fixed nodes after a planned `TC=5+0.05`, `256`-game run with seed `2026062367` exceeded the automation timeout and was discarded.
+
+Builds:
+
+- `Base`: local official `sf_18` build, `C:/Users/teamr/Desktop/stockfish/Stockfish-sf18/src/stockfish`, UCI id `Stockfish 18`.
+- `New`: PGO artifact `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-x86-64-avx512icl`, UCI id `Stockfish 20`.
+
+Match command summary:
+
+- Runner: Fastchess.
+- Limit: `20000` nodes.
+- Opening sample: `uho_lichess_4852_sample_1024.epd`.
+- Threads: `1`.
+- Hash: `16 MB`.
+- Rounds: `128`.
+- Repeat colors: yes.
+- Games: `256`.
+- Seed: `2026062368`.
+
+Result from the `Base` / Stockfish 18 perspective:
+
+- Wins: `73`.
+- Losses: `94`.
+- Draws: `89`.
+- Points: `117.5 / 256`.
+- Score: `45.90%`.
+- Elo: `-28.56 +/- 27.31`.
+- LOS for `Base`: `1.95%`.
+
+Interpretation:
+
+- The final `stockfish-20-rc2` PGO artifact again scores ahead of Stockfish 18, now on a larger fixed-node official-book sample.
+- This strengthens the release-candidate evidence without changing the selected artifact.
+
 ## Official UHO Sample: Current Dev Baseline vs Stockfish 20 RC2 PGO
 
 Purpose:
