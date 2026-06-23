@@ -204,6 +204,83 @@ Decision:
 
 - Rejected. The current rc2 baseline won the smoke filter clearly, so no longer UHO test was run.
 
+## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
+
+Purpose:
+
+- Test the Fishtest-active `cutoff-mismatch-3d` search change over the current local `stockfish-20-rc2` source.
+- Apply only the isolated top commit from the public branch, because the full branch also contained unrelated upstream development commits.
+
+Source:
+
+- Repository: `https://github.com/Dubslow/Stockfish`
+- Branch: `cutoff-mismatch-3d`
+- Isolated commit: `ec29fc0016074367d066ab07dc8eb26c41cab650`
+- Public Fishtest status observed on 2026-06-23: negative at LTC.
+
+Patch summary:
+
+- Changed the transposition-table penalty for a window-vs-bound cutoff mismatch from a fixed `1` to `depth / 8`.
+- The local bench signature changed, so the patch was tested as a functional search change.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the depth-scaled cutoff mismatch penalty.
+
+Bench:
+
+- Nodes searched: `2746588`
+- Nodes/second: `969498`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062340`
+- Games: `64`
+- Wins: `22`
+- Losses: `17`
+- Draws: `25`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 63.33`
+
+First official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_128.epd`
+- Seed: `2026062342`
+- Games: `32`
+- Wins: `5`
+- Losses: `7`
+- Draws: `20`
+- Score: `46.88%`
+- Elo: `-21.74 +/- 51.61`
+
+Second official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_128.epd`
+- Seed: `2026062343`
+- Games: `32`
+- Wins: `8`
+- Losses: `7`
+- Draws: `17`
+- Score: `51.56%`
+- Elo: `+10.86 +/- 64.41`
+
+Combined UHO:
+
+- Games: `64`
+- Wins: `13`
+- Losses: `14`
+- Draws: `37`
+- Score: `49.22%`
+- Elo: about `-5.43`
+
+Decision:
+
+- Rejected. The smoke filter favored the current rc2 baseline, the two short UHO checks netted out to practical neutrality, and the public LTC run was already negative. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
+
 ## Incremental Rejection: Restrict Singular Extension Depth Increase
 
 Purpose:

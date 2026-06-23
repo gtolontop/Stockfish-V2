@@ -616,6 +616,51 @@ Decision:
 
 - Rejected. The public run was already negative, and the local smoke filter clearly favored the current `rc2` baseline.
 
+## Rejected Incremental: Depth-Scaled Cutoff Mismatch Penalty
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/Dubslow/Stockfish`, branch `cutoff-mismatch-3d`.
+- Isolated top commit: `ec29fc0016074367d066ab07dc8eb26c41cab650`.
+- Fishtest active run observed on 2026-06-23 was negative at LTC.
+
+Patch:
+
+```diff
+-        ttWriter.penalize(1);
++        ttWriter.penalize(depth / 8);
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `2746588`
+- Nodes/second: `969498`
+- Bench signature changed, so this was treated as a functional search patch.
+
+Smoke result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `22`
+- Losses: `17`
+- Draws: `25`
+- Points: `34.5 / 64`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 63.33`
+
+Official UHO short checks from the `rc2-nopgo` baseline perspective:
+
+- Seed `2026062342`: `5W / 7L / 20D`, score `46.88%`, Elo `-21.74 +/- 51.61`.
+- Seed `2026062343`: `8W / 7L / 17D`, score `51.56%`, Elo `+10.86 +/- 64.41`.
+- Combined: `13W / 14L / 37D`, score `49.22%`, Elo about `-5.43`.
+
+Decision:
+
+- Rejected. The local smoke filter favored the current `rc2` baseline, the two UHO checks were effectively neutral, and the public LTC run was negative.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
