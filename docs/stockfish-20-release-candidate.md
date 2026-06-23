@@ -51,6 +51,7 @@ Current dev baseline comparison using official UHO samples:
 - `TC=5+0.05`, `64` games, seed `2026062317`: from baseline perspective `13W / 19L / 32D`, score `45.31%`, Elo `-32.67 +/- 35.53`.
 - `TC=5+0.05`, `64` games, seed `2026062318`: from baseline perspective `13W / 17L / 34D`, score `46.88%`, Elo `-21.74 +/- 42.26`.
 - `TC=5+0.05`, `128` games, seed `2026062319`: from baseline perspective `26W / 34L / 68D`, score `46.88%`, Elo `-21.74 +/- 26.76`.
+- Final PGO artifact, `TC=5+0.05`, `128` games, seed `2026062320`: from baseline perspective `23W / 36L / 69D`, score `44.92%`, Elo `-35.41 +/- 29.69`.
 
 Stockfish 18 comparison using tiny in-repo smoke book:
 
