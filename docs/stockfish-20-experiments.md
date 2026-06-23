@@ -313,6 +313,42 @@ Decision:
 
 - Rejected locally as an incremental patch over `rc2`. The smoke result was strong, but independent UHO seeds canceled out exactly.
 
+## Rejected Incremental: Depth-Scaled Shallower Re-Search Threshold
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/FauziAkram/Stockfish`, branch `nddec2`.
+- Fishtest active run observed on 2026-06-23 had slightly positive LLR, but was not a finished accepted upstream patch.
+
+Patch:
+
+```diff
+-                const bool doShallowerSearch = value < bestValue + 9;
++                const bool doShallowerSearch = value < bestValue + 9 - depth / 3;
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `2862670`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `27`
+- Losses: `20`
+- Draws: `17`
+- Points: `35.5 / 64`
+- Score: `55.47%`
+- Elo: `+38.15 +/- 72.05`
+
+Decision:
+
+- Rejected. The first incremental smoke filter showed the `rc2` baseline ahead.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
