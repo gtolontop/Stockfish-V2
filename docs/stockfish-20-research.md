@@ -115,6 +115,44 @@ Next action bias:
 - Prefer a genuinely new, x86-relevant, functional search idea with either positive Fishtest momentum or a simple isolated diff.
 - If no such candidate is available, spend cycles on stronger validation of the saved `stockfish-20-rc2` artifact against `stockfish-base` and official Stockfish 18 rather than taking speculative code churn.
 
+## 2026-06-23 Official Source Snapshot
+
+This refresh cross-checks the public website, GitHub releases, documentation, and local `official` remote before further release work.
+
+Website and releases:
+
+- The official download page headline is still `Download Stockfish 18`.
+- The official GitHub stable release API reports latest release `sf_18`, named `Stockfish 18`, published on `2026-01-31T14:33:53Z`.
+- The newest GitHub release entries observed are `stockfish-dev-20260614-74a0a737`, `sf_18`, `sf_17.1`, `sf_17`, and `sf_16.1`.
+- The latest official pre-release is `Stockfish dev-20260614-74a0a737`, tied to commit `74a0a737`.
+- Local `git fetch official --prune` still resolves `official/master` to `74a0a73715322608332038f7c0151ddf0609a59a`.
+
+Official organization inventory from the GitHub API:
+
+- `.github`: organization metadata.
+- `Stockfish`: C++ UCI engine.
+- `fishtest`: distributed testing framework.
+- `nnue-pytorch`: NNUE trainer.
+- `docs`: documentation site source.
+- `stockfish-web`: official website.
+- `books`: official opening/test books.
+- `networks`: evaluation network storage.
+- `WDL_model`: win/draw/loss modeling.
+- `docker-fishtest`: container support for Fishtest.
+- `stockfish-wiki-bot`: documentation automation.
+
+GUI and usage notes:
+
+- The official download page describes Stockfish as a command-line program and points users to chess GUIs.
+- The official docs list GUI installation paths for En Croissant, Arena, Nibbler, Lichess Local Engine, jose, and jfxchess.
+- The official docs also list other desktop, mobile, paid, and online GUI options; these are useful for manual inspection, but automated release validation should stay on CLI `bench` and Fastchess-style match runs.
+
+Release implication:
+
+- No newer official stable release supersedes Stockfish 18 during this pass.
+- No newer official development commit supersedes the saved `74a0a737` baseline during this pass.
+- The fork's `stockfish-20-rc2` artifact remains the selected local release candidate unless a new source change beats both the saved current-development baseline and the existing rc2 artifact.
+
 ## Initial Experiment Backlog
 
 - Add a local match harness around fastchess or Cute Chess CLI.
@@ -128,6 +166,7 @@ Next action bias:
 
 - Official site: https://stockfishchess.org/
 - Stockfish 18 release post: https://stockfishchess.org/blog/2026/stockfish-18/
+- Official download page: https://stockfishchess.org/download/
 - Download and GUI docs: https://official-stockfish.github.io/docs/stockfish-wiki/Download-and-usage.html
 - Compiling docs: https://official-stockfish.github.io/docs/stockfish-wiki/Compiling-from-source.html
 - Developer docs: https://official-stockfish.github.io/docs/stockfish-wiki/Developers.html
@@ -135,5 +174,6 @@ Next action bias:
 - Creating Fishtest tests: https://official-stockfish.github.io/docs/fishtest-wiki/Creating-my-first-test.html
 - Fishtest mathematics: https://official-stockfish.github.io/docs/fishtest-wiki/Fishtest-Mathematics.html
 - Official GitHub org: https://github.com/official-stockfish
+- Official GitHub releases: https://github.com/official-stockfish/Stockfish/releases
 - Fishtest repo: https://github.com/official-stockfish/fishtest
 - NNUE trainer repo: https://github.com/official-stockfish/nnue-pytorch
