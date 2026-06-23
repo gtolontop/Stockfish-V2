@@ -188,6 +188,38 @@ Decision:
 
 - Rejected. The first local smoke filter did not show an advantage for the candidate.
 
+## Rejected: Average Null-Move Fail-High Value With Beta
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/Vizvezdenec/Stockfish`, branch `nmpFrA1`.
+- Fishtest active run observed on 2026-06-23 had positive LLR, but was not a finished accepted upstream patch.
+
+Patch:
+
+```diff
+-                return nullValue;
++                return (nullValue + beta) / 2;
+```
+
+Bench:
+
+- Nodes searched: `3083255`
+
+Initial result from the baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `24`
+- Losses: `16`
+- Draws: `24`
+- Points: `36.0 / 64`
+- Score: `56.25%`
+- Elo: `+43.66 +/- 59.81`
+
+Decision:
+
+- Rejected. The first local smoke filter showed the baseline clearly ahead.
+
 ## Current Status
 
 - No source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline.
