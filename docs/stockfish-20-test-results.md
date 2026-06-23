@@ -138,6 +138,54 @@ Interpretation:
 - The final PGO `stockfish-20-rc2` artifact scores clearly ahead of the saved current development baseline in this local short time-control UHO validation.
 - This strengthens the release-candidate evidence because it validates the actual shipped artifact, not only the non-PGO experiment build.
 
+## Incremental Retest Rejection: Penalize Negative Singular Extensions
+
+Purpose:
+
+- Revisit the Fishtest-active `penalize-stuff-1c` patch after its public active run improved to a positive LLR near `+1.5`.
+- Compare non-PGO to non-PGO over the current `stockfish-20-rc2` source.
+
+Patch summary:
+
+- Add `ttWriter.penalize(-1)` when a singular-extension branch assigns a negative extension.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus `penalize-stuff-1c`.
+
+Bench:
+
+- Nodes searched: `2608431`
+- Nodes/second: `897601`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062355`
+- Games: `64`
+- Wins: `22`
+- Losses: `15`
+- Draws: `27`
+- Score: `55.47%`
+- Elo: `+38.15 +/- 61.05`
+
+Official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062356`
+- Games: `64`
+- Wins: `20`
+- Losses: `13`
+- Draws: `31`
+- Score: `55.47%`
+- Elo: `+38.15 +/- 50.26`
+
+Decision:
+
+- Rejected again. Both local retests favored the current `stockfish-20-rc2` source, so the patch was removed and the saved release candidate remains unchanged.
+
 ## Incremental Rejection: Cached Normal Move Properties
 
 Purpose:

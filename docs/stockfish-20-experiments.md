@@ -313,6 +313,17 @@ Decision:
 
 - Rejected locally as an incremental patch over `rc2`. The smoke result was strong, but independent UHO seeds canceled out exactly.
 
+Retest on 2026-06-23:
+
+- The active public Fishtest run later improved to a positive LLR near `+1.5`, so the same one-line patch was retested locally against `stockfish-20-rc2-nopgo`.
+- Bench signature was unchanged from the first local try: `2608431`.
+- Smoke, seed `2026062355`, from the `rc2-nopgo` baseline perspective: `22W / 15L / 27D`, score `55.47%`, Elo `+38.15 +/- 61.05`, favoring the baseline.
+- Short UHO, seed `2026062356`, from the `rc2-nopgo` baseline perspective: `20W / 13L / 31D`, score `55.47%`, Elo `+38.15 +/- 50.26`, favoring the baseline.
+
+Retest decision:
+
+- Rejected again. The newer public signal did not transfer to the local incremental `rc2` source; both the smoke and UHO retests favored the current release-candidate source.
+
 ## Rejected Incremental: Depth-Scaled Shallower Re-Search Threshold
 
 Source:
