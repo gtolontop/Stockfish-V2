@@ -500,7 +500,7 @@ Decision:
 
 - Rejected locally as an incremental SMP patch over `rc2`. The only local 8-thread smoke test favored the current baseline, and the public active run was not positive enough to justify carrying the simplification.
 
-## Accepted Incremental: testNet02 Default Network
+## Rejected After PGO: testNet02 Default Network
 
 Source:
 
@@ -534,12 +534,18 @@ Official UHO short time-control results from the `rc2-nopgo` baseline perspectiv
 - `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062334`: `16W / 18L / 30D`, score `48.44%`, Elo `-10.86 +/- 52.44`.
 - Combined UHO: `31W / 37L / 60D`, score `47.66%`.
 
+Final PGO artifact validation from the saved current-development baseline perspective:
+
+- `TC=5+0.05`, `uho_lichess_4852_sample_512.epd`, seed `2026062335`: `41W / 34L / 53D`, score `52.73%`, Elo `+19.02 +/- 36.42`.
+- `TC=5+0.05`, `uho_lichess_4852_sample_512.epd`, seed `2026062336`: `30W / 34L / 64D`, score `48.44%`, Elo `-10.86 +/- 30.08`.
+- Combined PGO vs current dev: `71W / 68L / 117D`, score `50.59%` for the saved current-development baseline.
+
 Decision:
 
-- Accepted locally as an incremental network update over `rc2`. Both UHO seeds favored the candidate, and the combined score supports rebuilding the release as `stockfish-20-rc3`.
+- Rejected after PGO validation. The network looked positive as a non-PGO increment over `rc2`, but the rebuilt `stockfish-20-rc3` artifact did not beat the saved current-development baseline. The source was reverted and `stockfish-20-rc2` remains the release candidate.
 
 ## Current Status
 
-- Two strength changes have been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut and the `testNet02` default network.
-- The fork release candidate should be rebuilt and retagged after PGO validation.
+- One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
+- The fork release candidate remains `stockfish-20-rc2`.
 - Future experiments should target different mechanisms instead of retuning these local history constants.

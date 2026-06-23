@@ -284,7 +284,7 @@ Decision:
 
 - Rejected. The 8-thread smoke filter favored the current rc2 baseline.
 
-## Incremental Acceptance: testNet02 Default Network
+## Incremental Rejection After PGO: testNet02 Default Network
 
 Purpose:
 
@@ -331,6 +331,32 @@ Second official UHO result from the `Base` / rc2-nopgo perspective:
 - Score: `48.44%`
 - Elo: `-10.86 +/- 52.44`
 
+Final PGO artifact result from the saved current-development baseline perspective:
+
+- Candidate artifact: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc3-x86-64-avx512icl`
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_512.epd`
+- Seed: `2026062335`
+- Games: `128`
+- Wins: `41`
+- Losses: `34`
+- Draws: `53`
+- Score: `52.73%`
+- Elo: `+19.02 +/- 36.42`
+
+Second final PGO artifact result from the saved current-development baseline perspective:
+
+- Candidate artifact: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc3-x86-64-avx512icl`
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_512.epd`
+- Seed: `2026062336`
+- Games: `128`
+- Wins: `30`
+- Losses: `34`
+- Draws: `64`
+- Score: `48.44%`
+- Elo: `-10.86 +/- 30.08`
+
 Decision:
 
-- Accepted. Combined UHO was `31W / 37L / 60D` from the current rc2 baseline perspective, score `47.66%`, so the candidate network improved the release candidate in local validation.
+- Rejected after PGO validation. Combined non-PGO UHO was `31W / 37L / 60D` from the current rc2 baseline perspective, but combined final PGO validation was `71W / 68L / 117D`, score `50.59%`, for the saved current-development baseline. The network change was reverted and `stockfish-20-rc2` remains the release candidate.
