@@ -424,6 +424,49 @@ Decision:
 
 - Rejected. The first incremental smoke filter showed the current `rc2` baseline clearly ahead, so the NNUE architecture patch and downloaded candidate network were removed.
 
+## Rejected Incremental: Restrict Singular Extension Depth Increase
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/locutus2/Stockfish`, branch `singular_ext_depth4`.
+- Fishtest active LTC run observed on 2026-06-23 was slightly positive, while the STC run was negative.
+
+Patch:
+
+```diff
+-                depth++;
++                depth += !allNode;
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `2520234`
+- Nodes/second: `919793`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `19`
+- Losses: `27`
+- Draws: `18`
+- Points: `28.0 / 64`
+- Score: `43.75%`
+- Elo: `-43.66 +/- 71.07`
+
+Official UHO short time-control results from the `rc2-nopgo` baseline perspective:
+
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062329`: `13W / 14L / 37D`, score `49.22%`, Elo `-5.43 +/- 38.48`.
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062330`: `16W / 12L / 36D`, score `53.12%`, Elo `+21.74 +/- 49.87`.
+- Combined UHO: `29W / 26L / 73D`, score `51.17%`.
+
+Decision:
+
+- Rejected locally as an incremental patch over `rc2`. The smoke filter favored the candidate, but the two UHO seeds left the current baseline slightly ahead overall.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

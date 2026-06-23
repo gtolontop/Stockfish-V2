@@ -203,3 +203,54 @@ Smoke result from the `Base` / rc2-nopgo perspective:
 Decision:
 
 - Rejected. The current rc2 baseline won the smoke filter clearly, so no longer UHO test was run.
+
+## Incremental Rejection: Restrict Singular Extension Depth Increase
+
+Purpose:
+
+- Test the Fishtest-active `singular_ext_depth4` search change as an incremental patch over the current local `stockfish-20-rc2` source.
+- Continue past smoke because the first filter favored the candidate.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus `depth += !allNode` in the singular extension path.
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062328`
+- Games: `64`
+- Wins: `19`
+- Losses: `27`
+- Draws: `18`
+- Score: `43.75%`
+- Elo: `-43.66 +/- 71.07`
+
+Official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062329`
+- Games: `64`
+- Wins: `13`
+- Losses: `14`
+- Draws: `37`
+- Score: `49.22%`
+- Elo: `-5.43 +/- 38.48`
+
+Second official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062330`
+- Games: `64`
+- Wins: `16`
+- Losses: `12`
+- Draws: `36`
+- Score: `53.12%`
+- Elo: `+21.74 +/- 49.87`
+
+Decision:
+
+- Rejected. Combined UHO was `29W / 26L / 73D` for the current rc2 baseline, so the candidate did not improve the release candidate.
