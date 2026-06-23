@@ -267,6 +267,52 @@ Decision:
 
 - Accepted as a Stockfish 20 candidate patch. Fixed-node UHO was neutral, but this patch is intended to save time by bypassing full NNUE in selected positions; three independent short time-control UHO runs all favored the candidate.
 
+## Rejected Incremental: Penalize Negative Singular Extensions
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/Dubslow/Stockfish`, branch `penalize-stuff-1c`.
+- Fishtest active run observed on 2026-06-23 had positive LLR, but was not a finished accepted upstream patch.
+
+Patch:
+
+```diff
+             else if (cutNode)
+                 extension = -2;
++
++            if (extension < 0)
++                ttWriter.penalize(-1);
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- This is the current `rc2` source built without PGO, so the experiment compares non-PGO to non-PGO rather than candidate non-PGO to release PGO.
+
+Bench:
+
+- Nodes searched: `2608431`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `19`
+- Losses: `28`
+- Draws: `17`
+- Points: `27.5 / 64`
+- Score: `42.97%`
+- Elo: `-49.18 +/- 66.40`
+
+Official UHO short time-control results from the `rc2-nopgo` baseline perspective:
+
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062322`: `14W / 16L / 34D`, score `48.44%`, Elo `-10.86 +/- 42.65`.
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062323`: `18W / 16L / 30D`, score `51.56%`, Elo `+10.86 +/- 42.65`.
+- Combined UHO: `32W / 32L / 64D`, score `50.00%`.
+
+Decision:
+
+- Rejected locally as an incremental patch over `rc2`. The smoke result was strong, but independent UHO seeds canceled out exactly.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
