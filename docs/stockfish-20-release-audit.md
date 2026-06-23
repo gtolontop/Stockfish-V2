@@ -56,7 +56,8 @@ Package handoff:
 
 - Evidence: package path `C:/Users/teamr/Desktop/stockfish/match-results/release/stockfish-20-rc2-x86-64-avx512icl.zip`.
 - Verification: `scripts/package_stockfish20_release.ps1` builds the package outside the Git worktree.
-- Verification: `scripts/verify_stockfish20_package.ps1` extracts the zip, validates file list and checksums, confirms packaged binary SHA256, and checks packaged UCI identity.
+- Verification: `scripts/verify_stockfish20_package.ps1` extracts the zip, validates file list and checksums, checks `SOURCE.txt`, confirms packaged binary SHA256, and checks packaged UCI identity.
+- Package contents include `SOURCE.txt`, `Copying.txt`, and `AUTHORS` alongside the binary and release documentation.
 
 Regular commits:
 
@@ -92,3 +93,4 @@ Expected outcome:
 - Short time-control evidence is useful for this fork release candidate, but it is not a universal Elo proof.
 - The selected artifact targets `x86-64-avx512icl`; other CPU targets would need separate builds and validation.
 - The zip SHA256 can change when the package is regenerated because archive metadata can change, so treat the package verifier and internal `SHA256SUMS.txt` as the handoff integrity gate for the current generated zip.
+- The package includes license and authorship files from this repository, but external redistribution still needs the distributor to respect the GPL terms.

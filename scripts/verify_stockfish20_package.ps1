@@ -6,8 +6,11 @@ $ErrorActionPreference = 'Stop'
 
 $ExpectedBinaryHash = '5032BE17BCA6C30115A46D5F8511DFDF07E3F34604B064D6E11FF289D67F7B61'
 $ExpectedEntries = @(
+    'AUTHORS',
+    'Copying.txt',
     'README.md',
     'SHA256SUMS.txt',
+    'SOURCE.txt',
     'bin/stockfish-20-x86-64-avx512icl',
     'docs/stockfish-20-experiments.md',
     'docs/stockfish-20-release-audit.md',
@@ -114,6 +117,18 @@ try {
         $ActualHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $FilePath).Hash.ToUpperInvariant()
         Assert-Equal -Label "SHA256 $RelativePath" -Actual $ActualHash -Expected $ExpectedHash
     }
+
+    $SourceText = Get-Content -LiteralPath (Join-Path $TempRoot 'SOURCE.txt') -Raw
+    if ($SourceText -notmatch 'Fork remote: https://github.com/gtolontop/Stockfish-V2') {
+        throw 'SOURCE.txt does not reference the fork remote.'
+    }
+    if ($SourceText -notmatch 'Branch: fix/stockfish-20-release') {
+        throw 'SOURCE.txt does not reference the release branch.'
+    }
+    if ($SourceText -notmatch 'Selected engine artifact source commit: b070c897') {
+        throw 'SOURCE.txt does not reference the selected engine artifact source commit.'
+    }
+    Write-Host '[ok] SOURCE.txt release source reference'
 
     $PackagedBinary = Join-Path $TempRoot 'bin/stockfish-20-x86-64-avx512icl'
     $PackagedBinaryHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $PackagedBinary).Hash.ToUpperInvariant()

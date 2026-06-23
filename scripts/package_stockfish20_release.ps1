@@ -17,6 +17,11 @@ $Docs = @(
     'docs/stockfish-20-research.md'
 )
 
+$RootFiles = @(
+    'AUTHORS',
+    'Copying.txt'
+)
+
 function Assert-File {
     param(
         [string] $Label,
@@ -64,6 +69,9 @@ Assert-File -Label 'release binary' -Path $ReleaseBinary
 foreach ($Doc in $Docs) {
     Assert-File -Label 'release document' -Path (Join-Path $RepoRoot $Doc)
 }
+foreach ($RootFile in $RootFiles) {
+    Assert-File -Label 'release root file' -Path (Join-Path $RepoRoot $RootFile)
+}
 
 New-Item -ItemType Directory -Path $ReleaseRoot -Force | Out-Null
 Assert-ChildPath -Label 'staging directory' -Path $StagingDir -Parent $ReleaseRoot
@@ -84,6 +92,41 @@ Copy-Item -LiteralPath $ReleaseBinary -Destination $PackagedBinary
 foreach ($Doc in $Docs) {
     Copy-Item -LiteralPath (Join-Path $RepoRoot $Doc) -Destination (Join-Path (Join-Path $StagingDir 'docs') (Split-Path $Doc -Leaf))
 }
+foreach ($RootFile in $RootFiles) {
+    Copy-Item -LiteralPath (Join-Path $RepoRoot $RootFile) -Destination (Join-Path $StagingDir $RootFile)
+}
+
+$HeadCommit = (& git -C $RepoRoot rev-parse HEAD 2>&1)
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not read HEAD commit: $HeadCommit"
+}
+$HeadCommit = ($HeadCommit | Select-Object -First 1).Trim()
+
+$BranchName = (& git -C $RepoRoot rev-parse --abbrev-ref HEAD 2>&1)
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not read branch name: $BranchName"
+}
+$BranchName = ($BranchName | Select-Object -First 1).Trim()
+
+$OriginUrl = (& git -C $RepoRoot remote get-url origin 2>&1)
+if ($LASTEXITCODE -ne 0) {
+    throw "Could not read origin URL: $OriginUrl"
+}
+$OriginUrl = ($OriginUrl | Select-Object -First 1).Trim()
+
+$SourcePath = Join-Path $StagingDir 'SOURCE.txt'
+@(
+    'Stockfish 20 RC2 fork release source reference',
+    '',
+    "Fork remote: $OriginUrl",
+    "Branch: $BranchName",
+    "Release documentation commit: $HeadCommit",
+    'Selected engine artifact source commit: b070c897',
+    'Accepted engine patch: 03b95f10 Add lazy simple evaluation shortcut',
+    '',
+    'This package is fork-only and not an official upstream Stockfish release.',
+    'The repository source, GPL license text, and authorship information must accompany binary redistribution.'
+) | Set-Content -LiteralPath $SourcePath -Encoding ASCII
 
 $ReadmePath = Join-Path $StagingDir 'README.md'
 @(
@@ -104,6 +147,10 @@ $ReadmePath = Join-Path $StagingDir 'README.md'
     '',
     'The `docs/` directory contains the release audit, release notes, manifest, candidate description, test results, experiment log, and research notes.',
     '',
+    '## Source, License, And Authors',
+    '',
+    'See `SOURCE.txt`, `Copying.txt`, and `AUTHORS` in this package.',
+    '',
     '## Verification',
     '',
     'Use `SHA256SUMS.txt` to verify the packaged files. The source repository also contains `scripts/verify_stockfish20_release.ps1` for pre-package release verification.'
@@ -112,7 +159,10 @@ $ReadmePath = Join-Path $StagingDir 'README.md'
 $ChecksumPath = Join-Path $StagingDir 'SHA256SUMS.txt'
 $ChecksumLines = @()
 $ChecksumLines += Get-Sha256Line -Path $PackagedBinary -DisplayName "bin/$PackagedBinaryName"
+$ChecksumLines += Get-Sha256Line -Path (Join-Path $StagingDir 'AUTHORS') -DisplayName 'AUTHORS'
+$ChecksumLines += Get-Sha256Line -Path (Join-Path $StagingDir 'Copying.txt') -DisplayName 'Copying.txt'
 $ChecksumLines += Get-Sha256Line -Path $ReadmePath -DisplayName 'README.md'
+$ChecksumLines += Get-Sha256Line -Path $SourcePath -DisplayName 'SOURCE.txt'
 foreach ($Doc in Get-ChildItem -LiteralPath (Join-Path $StagingDir 'docs') -File | Sort-Object Name) {
     $ChecksumLines += Get-Sha256Line -Path $Doc.FullName -DisplayName "docs/$($Doc.Name)"
 }

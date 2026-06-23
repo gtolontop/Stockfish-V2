@@ -65,7 +65,7 @@ The package script writes outside the Git worktree under:
 - Directory: `C:/Users/teamr/Desktop/stockfish/match-results/release/stockfish-20-rc2`
 - Zip: `C:/Users/teamr/Desktop/stockfish/match-results/release/stockfish-20-rc2-x86-64-avx512icl.zip`
 
-The package contains the release binary, a package README, `SHA256SUMS.txt`, and the release documentation set. The zip checksum is printed by the script after each package build.
+The package contains the release binary, a package README, `SHA256SUMS.txt`, `SOURCE.txt`, `Copying.txt`, `AUTHORS`, and the release documentation set. The zip checksum is printed by the script after each package build.
 
 Verify the generated zip before handoff:
 
@@ -73,7 +73,7 @@ Verify the generated zip before handoff:
 powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_package.ps1
 ```
 
-The package verifier extracts the zip to a temporary directory, checks the expected file list, validates every entry in `SHA256SUMS.txt`, confirms the packaged binary SHA256, and verifies that the extracted binary reports `id name Stockfish 20` over UCI.
+The package verifier extracts the zip to a temporary directory, checks the expected file list, validates every entry in `SHA256SUMS.txt`, checks the source reference, confirms the packaged binary SHA256, and verifies that the extracted binary reports `id name Stockfish 20` over UCI.
 
 ## Source State
 
