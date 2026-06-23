@@ -90,6 +90,7 @@ The package verifier checks the zip contents, internal checksums, source referen
 
 Supporting records:
 
+- `docs/stockfish-20-fork-release.md`
 - `docs/stockfish-20-release-audit.md`
 - `docs/stockfish-20-release-manifest.md`
 - `docs/stockfish-20-release-candidate.md`

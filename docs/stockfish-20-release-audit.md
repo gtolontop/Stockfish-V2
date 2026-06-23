@@ -58,6 +58,7 @@ Package handoff:
 - Verification: `scripts/package_stockfish20_release.ps1` builds the package outside the Git worktree.
 - Verification: `scripts/verify_stockfish20_package.ps1` extracts the zip, validates file list and checksums, checks `SOURCE.txt`, confirms packaged binary SHA256, and checks packaged UCI identity.
 - Package contents include `SOURCE.txt`, `Copying.txt`, and `AUTHORS` alongside the binary and release documentation.
+- Fork release handoff text is recorded in `docs/stockfish-20-fork-release.md`.
 
 Regular commits:
 

@@ -8,6 +8,7 @@ $StagingDir = Join-Path $ReleaseRoot $ReleaseName
 $ZipPath = Join-Path $ReleaseRoot "$ReleaseName-x86-64-avx512icl.zip"
 
 $Docs = @(
+    'docs/stockfish-20-fork-release.md',
     'docs/stockfish-20-release-audit.md',
     'docs/stockfish-20-release-notes.md',
     'docs/stockfish-20-release-manifest.md',

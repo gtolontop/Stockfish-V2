@@ -13,6 +13,7 @@ $ExpectedEntries = @(
     'SOURCE.txt',
     'bin/stockfish-20-x86-64-avx512icl',
     'docs/stockfish-20-experiments.md',
+    'docs/stockfish-20-fork-release.md',
     'docs/stockfish-20-release-audit.md',
     'docs/stockfish-20-release-candidate.md',
     'docs/stockfish-20-release-manifest.md',
