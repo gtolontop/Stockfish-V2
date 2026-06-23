@@ -113,6 +113,7 @@ The experiment log records rejected or not-applied alternatives, including:
 
 See:
 
+- `docs/stockfish-20-release-audit.md`
 - `docs/stockfish-20-experiments.md`
 - `docs/stockfish-20-test-results.md`
 

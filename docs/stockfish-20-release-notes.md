@@ -82,6 +82,7 @@ The package verifier checks the zip contents, internal checksums, packaged binar
 
 Supporting records:
 
+- `docs/stockfish-20-release-audit.md`
 - `docs/stockfish-20-release-manifest.md`
 - `docs/stockfish-20-release-candidate.md`
 - `docs/stockfish-20-test-results.md`

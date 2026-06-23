@@ -8,6 +8,7 @@ $StagingDir = Join-Path $ReleaseRoot $ReleaseName
 $ZipPath = Join-Path $ReleaseRoot "$ReleaseName-x86-64-avx512icl.zip"
 
 $Docs = @(
+    'docs/stockfish-20-release-audit.md',
     'docs/stockfish-20-release-notes.md',
     'docs/stockfish-20-release-manifest.md',
     'docs/stockfish-20-release-candidate.md',
@@ -101,7 +102,7 @@ $ReadmePath = Join-Path $StagingDir 'README.md'
     '',
     '## Documentation',
     '',
-    'The `docs/` directory contains the release notes, manifest, candidate description, test results, experiment log, and research notes.',
+    'The `docs/` directory contains the release audit, release notes, manifest, candidate description, test results, experiment log, and research notes.',
     '',
     '## Verification',
     '',
