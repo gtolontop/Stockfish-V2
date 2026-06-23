@@ -360,3 +360,36 @@ Second final PGO artifact result from the saved current-development baseline per
 Decision:
 
 - Rejected after PGO validation. Combined non-PGO UHO was `31W / 37L / 60D` from the current rc2 baseline perspective, but combined final PGO validation was `71W / 68L / 117D`, score `50.59%`, for the saved current-development baseline. The network change was reverted and `stockfish-20-rc2` remains the release candidate.
+
+## Incremental Rejection: Remove Pawn History Prefetch
+
+Purpose:
+
+- Test the Fishtest-active `simp-pf` no-functional-change prefetch removal as an incremental performance patch over the current local `stockfish-20-rc2` source.
+- Stop at the smoke filter if the current rc2 baseline is clearly ahead.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source with `prefetch(&history->pawn_entry(*this)[pc][to])` removed from `Position::do_move()`.
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `919345`
+- Signature matched the current rc2 source.
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062337`
+- Games: `64`
+- Wins: `25`
+- Losses: `17`
+- Draws: `22`
+- Score: `56.25%`
+- Elo: `+43.66 +/- 71.07`
+
+Decision:
+
+- Rejected. The smoke filter favored the current rc2 baseline clearly, so no longer UHO test was run.

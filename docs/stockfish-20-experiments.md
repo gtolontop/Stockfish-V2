@@ -544,6 +544,43 @@ Decision:
 
 - Rejected after PGO validation. The network looked positive as a non-PGO increment over `rc2`, but the rebuilt `stockfish-20-rc3` artifact did not beat the saved current-development baseline. The source was reverted and `stockfish-20-rc2` remains the release candidate.
 
+## Rejected Incremental: Remove Pawn History Prefetch
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/ces42/Stockfish`, branch `simp-pf`.
+- Fishtest active run observed on 2026-06-23 described the change as no functional change.
+
+Patch:
+
+```diff
+-        prefetch(&history->pawn_entry(*this)[pc][to]);
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `919345`
+- Bench signature matched the current `rc2` source, as expected for a no-functional-change patch.
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `25`
+- Losses: `17`
+- Draws: `22`
+- Points: `36.0 / 64`
+- Score: `56.25%`
+- Elo: `+43.66 +/- 71.07`
+
+Decision:
+
+- Rejected. The patch was expected to be a small performance simplification, but the first time-control smoke filter favored the current `rc2` baseline clearly.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
