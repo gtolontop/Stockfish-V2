@@ -66,6 +66,14 @@ powershell -ExecutionPolicy Bypass -File scripts/package_stockfish20_release.ps1
 
 The script writes the package outside the repository under `C:/Users/teamr/Desktop/stockfish/match-results/release/`, includes `SHA256SUMS.txt`, and prints the zip SHA256 after packaging.
 
+Verify the generated zip with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_package.ps1
+```
+
+The package verifier checks the zip contents, internal checksums, packaged binary hash, and extracted binary UCI identity.
+
 ## Known Limits
 
 - This is not a formal Fishtest proof.
