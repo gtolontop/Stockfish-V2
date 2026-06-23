@@ -1,8 +1,10 @@
 # Stockfish 20 RC2 Fork Release
 
-Tag suggestion: `stockfish-20-rc2`
+Tag suggestion: `stockfish-20-rc2-release`
 Branch: `fix/stockfish-20-release`
 Status: fork-only release candidate
+
+The existing tag `stockfish-20-rc2` points to the selected engine artifact source commit. Use `stockfish-20-rc2-release` for the fork GitHub release that includes the release docs, packaging scripts, verification gate, and final handoff metadata.
 
 ## Release Asset
 

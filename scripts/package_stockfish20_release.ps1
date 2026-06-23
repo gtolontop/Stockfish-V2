@@ -60,12 +60,24 @@ function Assert-ChildPath {
     }
 }
 
+function Assert-CleanWorktree {
+    $Status = & git -C $RepoRoot status --porcelain 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        throw "Could not read git status: $Status"
+    }
+
+    if (($Status | Measure-Object).Count -ne 0) {
+        throw "Release packaging requires a clean Git worktree. Commit or discard local changes before packaging."
+    }
+}
+
 Write-Host 'Running release verification before packaging...'
 & powershell -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'verify_stockfish20_release.ps1')
 if ($LASTEXITCODE -ne 0) {
     throw 'Release verification failed; package was not created.'
 }
 
+Assert-CleanWorktree
 Assert-File -Label 'release binary' -Path $ReleaseBinary
 foreach ($Doc in $Docs) {
     Assert-File -Label 'release document' -Path (Join-Path $RepoRoot $Doc)
