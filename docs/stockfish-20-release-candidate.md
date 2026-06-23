@@ -2,16 +2,18 @@
 
 Date: 2026-06-23
 Branch: `fix/stockfish-20-release`
-Source commit: `eaa298800133b38cf618e0f676306ee6fcd889ab`
+Source commit: `b070c897`
 Fork remote: `https://github.com/gtolontop/Stockfish-V2`
 
 ## Candidate Artifact
 
-- Binary: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-x86-64-avx512icl`
+- Release candidate: `stockfish-20-rc2`
+- Source commit: `b070c897`
+- Binary: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-x86-64-avx512icl`
 - Build type: PGO, `ARCH=native`
 - Selected architecture: `x86-64-avx512icl`
 - Network: `nn-71d6d32cb962.nnue`
-- SHA256: `2202D368339480602133C54FF49C71CAADB05B1955EB49BD2ADBE6D03036C4E0`
+- SHA256: `5032BE17BCA6C30115A46D5F8511DFDF07E3F34604B064D6E11FF289D67F7B61`
 
 UCI identity:
 
@@ -27,15 +29,28 @@ id author the Stockfish developers (see AUTHORS file)
 cd /mnt/c/Users/teamr/Desktop/stockfish/Stockfish-V2/src
 make -j$(nproc) profile-build ARCH=native
 make strip ARCH=native
-cp stockfish /mnt/c/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-x86-64-avx512icl
+cp stockfish /mnt/c/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-x86-64-avx512icl
 ```
 
 ## Validation Summary
 
-Smoke bench:
+Accepted engine patch:
+
+- `Add lazy simple evaluation shortcut`
+- Commit: `03b95f10`
+- Rationale: selected high-margin material/simple-eval positions can bypass full NNUE evaluation, improving real-time play while fixed-node strength remains neutral.
+
+Pre-PGO bench for the accepted patch:
 
 - Command: `./stockfish bench 16 1 13 default depth`
-- Nodes searched: `3493826`
+- Nodes searched: `3106469`
+
+Current dev baseline comparison using official UHO samples:
+
+- Fixed nodes, `20000` nodes, `128` games: from baseline perspective `39W / 38L / 51D`, score `50.39%`, Elo `+2.71 +/- 33.32`.
+- `TC=5+0.05`, `64` games, seed `2026062317`: from baseline perspective `13W / 19L / 32D`, score `45.31%`, Elo `-32.67 +/- 35.53`.
+- `TC=5+0.05`, `64` games, seed `2026062318`: from baseline perspective `13W / 17L / 34D`, score `46.88%`, Elo `-21.74 +/- 42.26`.
+- `TC=5+0.05`, `128` games, seed `2026062319`: from baseline perspective `26W / 34L / 68D`, score `46.88%`, Elo `-21.74 +/- 26.76`.
 
 Stockfish 18 comparison using tiny in-repo smoke book:
 
@@ -61,7 +76,8 @@ This is a valid fork-only Stockfish 20 release candidate:
 - The official remote is configured fetch-only with push URL `DISABLED`.
 - It identifies as `Stockfish 20`.
 - It beats official Stockfish 18 in the local fixed-node official-book validation.
+- It has one locally accepted source-level candidate patch that beats the saved current-dev baseline in short time-control UHO validation.
 
 Known limitation:
 
-- This is not a formal Fishtest proof and does not prove superiority over the current official development head. Candidate engine tweaks tested so far did not beat the current dev baseline and were intentionally not committed.
+- This is not a formal Fishtest proof and does not prove a 10/10 crush over the current official development head. The accepted patch has promising local time-control evidence and should still be treated as a fork release candidate, not an upstream-quality proof.
