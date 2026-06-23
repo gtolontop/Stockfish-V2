@@ -402,6 +402,41 @@ Decision:
 
 - Rejected. The current rc2 baseline won the smoke filter clearly, so no longer UHO test was run.
 
+## Incremental Rejection: AVX512 Move Rank Buffer
+
+Purpose:
+
+- Test official PR `#6678`, `Variant of PR6672 (Use avx512 in move rank)`, as a local AVX-512 performance patch over the current `stockfish-20-rc2` source.
+- Source: `https://github.com/official-stockfish/Stockfish/pull/6678`
+- Isolated commit: `bf3adec0a281bac56782e9de6e1815458da85428`
+
+Patch notes:
+
+- Added `alignas(32)` to `MultiArray`.
+- Added an AVX-512-only quiet-history buffer in `MovePicker::score()` to precompute combined history values for each `(piece, square)` pair.
+- The upstream PR branch was dirty against current master, but the isolated commit touched only `src/misc.h` and `src/movepick.cpp`. It required one local conflict resolution because this fork uses `usize` where the PR used `std::size_t`.
+
+Bench:
+
+- Command: `./stockfish bench 16 1 13 default depth`
+- Nodes searched: `3106469`
+- Nodes/second: `884026`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062363`
+- Games: `64`
+- Wins: `28`
+- Losses: `16`
+- Draws: `20`
+- Score: `59.38%`
+- Elo: `+65.92 +/- 62.63`
+
+Decision:
+
+- Rejected. The smoke filter clearly favored the current `stockfish-20-rc2` source, so the patch was removed and no UHO or PGO follow-up was run.
+
 ## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
 
 Purpose:

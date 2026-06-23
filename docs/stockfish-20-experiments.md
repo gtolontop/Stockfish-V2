@@ -868,6 +868,31 @@ Decision:
 
 - Rejected locally as an incremental patch over `rc2`. The result was mixed and the combined UHO set slightly favored the current release-candidate source, so this patch was removed.
 
+## Rejected Incremental: AVX512 Move Rank Buffer
+
+Source:
+
+- Official open PR: `https://github.com/official-stockfish/Stockfish/pull/6678`
+- Upstream title: `Variant of PR6672 (Use avx512 in move rank)`
+- Isolated commit tested locally: `bf3adec0a281bac56782e9de6e1815458da85428`
+
+Patch summary:
+
+- Added `alignas(32)` to `MultiArray`.
+- Added an AVX-512-only quiet-history buffer in `MovePicker::score()` to precompute combined history values for each `(piece, square)` pair.
+
+Local result:
+
+- The upstream PR branch was dirty against current master, but the isolated commit touched only `src/misc.h` and `src/movepick.cpp`.
+- It applied with one local `misc.h` type-convention conflict because this fork uses `usize` where the PR used `std::size_t`.
+- Build passed with `ARCH=native`.
+- Bench nodes searched: `3106469`.
+- Smoke seed `2026062363`, from the `rc2-nopgo` baseline perspective: `28W / 16L / 20D`, score `59.38%`, Elo `+65.92 +/- 62.63`.
+
+Decision:
+
+- Rejected. The smoke filter clearly favored the current `stockfish-20-rc2` source, so no UHO or PGO follow-up was run.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
