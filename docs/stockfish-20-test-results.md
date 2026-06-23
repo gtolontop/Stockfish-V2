@@ -133,9 +133,33 @@ Result from the `Base` / current dev baseline perspective:
 - Elo: `-35.41 +/- 29.69`
 - LOS for `Base`: `0.92%`
 
+Repeat validation from the `Base` / current dev baseline perspective:
+
+- Time control: `5+0.05`.
+- Opening sample: `uho_lichess_4852_sample_512.epd`.
+- Seed: `2026062361`.
+- Games: `128`.
+- Wins: `22`.
+- Losses: `44`.
+- Draws: `62`.
+- Points: `53.0 / 128`.
+- Score: `41.41%`.
+- Elo: `-60.31 +/- 29.31`.
+- LOS for `Base`: `0.00%`.
+
+Combined PGO artifact validation from the `Base` / current dev baseline perspective:
+
+- Games: `256`.
+- Wins: `45`.
+- Losses: `80`.
+- Draws: `131`.
+- Points: `110.5 / 256`.
+- Score: `43.16%`.
+- Combined result strongly favors `stockfish-20-rc2`.
+
 Interpretation:
 
-- The final PGO `stockfish-20-rc2` artifact scores clearly ahead of the saved current development baseline in this local short time-control UHO validation.
+- The final PGO `stockfish-20-rc2` artifact scores clearly ahead of the saved current development baseline in repeated local short time-control UHO validation.
 - This strengthens the release-candidate evidence because it validates the actual shipped artifact, not only the non-PGO experiment build.
 
 ## Incremental Retest Rejection: Penalize Negative Singular Extensions
