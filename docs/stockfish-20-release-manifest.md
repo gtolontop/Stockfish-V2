@@ -37,7 +37,15 @@ The official Stockfish download page still lists Stockfish 18 as the public stab
 
 ## Release Verification
 
-Run the release verifier before publishing or handing off the fork release candidate:
+Run the release gate before publishing or handing off the fork release candidate:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_stockfish20_release_gate.ps1
+```
+
+The gate runs release verification, rebuilds the package, verifies the package, and writes a final summary next to the generated zip.
+
+The lower-level release verifier can also be run directly:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_release.ps1

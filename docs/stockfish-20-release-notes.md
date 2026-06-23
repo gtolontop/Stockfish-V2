@@ -48,7 +48,15 @@ The strongest local evidence is the repeated time-control validation against the
 
 ## Verification
 
-Before handing off the artifact, run:
+Before handing off the artifact, run the release gate:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_stockfish20_release_gate.ps1
+```
+
+The gate verifies the release, rebuilds the package, verifies the generated zip, and writes a final summary beside the zip.
+
+The lower-level release verifier can also be run directly:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_release.ps1

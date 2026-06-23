@@ -73,7 +73,15 @@ Regular commits:
 
 ## Final Local Commands
 
-Run this sequence before handing off the zip:
+Run the one-command release gate before handing off the zip:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/run_stockfish20_release_gate.ps1
+```
+
+The release gate runs the full verification sequence, rebuilds the package, verifies the generated zip, and writes `C:/Users/teamr/Desktop/stockfish/match-results/release/LAST_VERIFIED_STOCKFISH20_PACKAGE.txt`.
+
+Equivalent detailed sequence:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_release.ps1
@@ -86,6 +94,7 @@ Expected outcome:
 - Release verifier passes.
 - Package script prints the output directory, zip path, and zip SHA256.
 - Package verifier passes and confirms packaged UCI id `Stockfish 20`.
+- Release gate writes a final summary containing HEAD, branch, official push URL, package path, and package SHA256.
 
 ## Residual Risk
 
