@@ -88,6 +88,33 @@ Baseline result:
 6. Promote only changes that compile, keep bench sane, and improve or at least do not regress local match results.
 7. Use version branding only after the engine changes and test logs are stable.
 
+## 2026-06-23 Active Triage Refresh
+
+Official state:
+
+- Official stable release is still Stockfish 18.
+- Official `master` still resolves to `74a0a73715322608332038f7c0151ddf0609a59a` after a fresh fetch.
+- The current fork branch is intentionally ahead of that official baseline only through local Stockfish 20 release work and documented experiments.
+
+Active Fishtest observations:
+
+- `simple_eval10` / Take 4 (`49883e63`) is one of the strongest active signals and is already represented in this fork. A direct diff of `src/evaluate.cpp`, `src/evaluate.h`, `src/search.cpp`, `src/search.h`, and `src/thread.cpp` against that commit is empty.
+- `penalize-stuff-1c` has a positive active public LLR, but the local retest over `stockfish-20-rc2-nopgo` again favored the baseline in both smoke and UHO.
+- `nmpFrA1`, `cnLmrSpawn4`, `emotibonk`, `normal-move-properties-state`, `testNet02`, `better-skip2-fishtest`, `simp-pf`, `opt-prefetch`, `nddec2`, `cutoff-mismatch-3d`, `no_draw2`, and related prefetch/history experiments are already covered by local accept/reject notes.
+- `riscv-scalable-port` is not relevant to the current x86-64 AVX-512ICL release artifact.
+- Net-only experiments such as `bt4-relabel` require separate network artifact handling and are not promoted unless local tests justify replacing the embedded/default NNUE.
+
+Open GitHub pull request observations:
+
+- Recent open PRs include several no-functional-change cleanups, CI/RISC-V work, and prefetch variants.
+- The only clearly strength-oriented open PRs worth watching next are search or TT/prefetch changes such as ProbCut and early TT prefetch variants, but current local prefetch validations have been weak or rejected after PGO.
+
+Next action bias:
+
+- Do not retest `simple_eval10` Take 4 as a patch; it is already in the source.
+- Prefer a genuinely new, x86-relevant, functional search idea with either positive Fishtest momentum or a simple isolated diff.
+- If no such candidate is available, spend cycles on stronger validation of the saved `stockfish-20-rc2` artifact against `stockfish-base` and official Stockfish 18 rather than taking speculative code churn.
+
 ## Initial Experiment Backlog
 
 - Add a local match harness around fastchess or Cute Chess CLI.
