@@ -835,6 +835,39 @@ Decision:
 
 - Rejected after PGO validation. The source patch was reverted because the final PGO artifact failed the direct saved current-development baseline check, and `stockfish-20-rc2` remains the fork release candidate.
 
+## Rejected Incremental: Improving-Aware ProbCut Depth
+
+Source:
+
+- Official open PR: `https://github.com/official-stockfish/Stockfish/pull/6914`
+- Branch tested locally: `https://github.com/Vizvezdenec/Stockfish`, branch `probcutSEDPR`.
+- Commit tested: `72443b641fc1e234a3e1a0fb30282fbc312da047`.
+- Upstream PR reported passed STC and LTC, so this was worth a local incremental check despite being open.
+
+Patch:
+
+```diff
+-        Depth      probCutDepth = depth - 4;
++        Depth      probCutDepth = depth - 4 - improving;
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Local result:
+
+- Bench nodes searched: `3140829` over the current local source stack.
+- Smoke, seed `2026062357`, from the baseline perspective: `21W / 22L / 21D`, score `49.22%`, slightly favoring the candidate.
+- UHO seed `2026062358`, from the baseline perspective: `19W / 17L / 28D`, score `51.56%`, favoring the baseline.
+- UHO seed `2026062359`, from the baseline perspective: `11W / 18L / 35D`, score `44.53%`, favoring the candidate.
+- UHO seed `2026062360`, from the baseline perspective: `21W / 13L / 30D`, score `56.25%`, favoring the baseline.
+- Combined UHO: `51W / 48L / 93D`, score `50.78%` for the baseline.
+
+Decision:
+
+- Rejected locally as an incremental patch over `rc2`. The result was mixed and the combined UHO set slightly favored the current release-candidate source, so this patch was removed.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

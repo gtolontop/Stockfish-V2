@@ -186,6 +186,93 @@ Decision:
 
 - Rejected again. Both local retests favored the current `stockfish-20-rc2` source, so the patch was removed and the saved release candidate remains unchanged.
 
+## Incremental Rejection: Improving-Aware ProbCut Depth
+
+Purpose:
+
+- Test official open PR `6914`, `Do more aggressive probCut when improving`, as an incremental patch over the current local `stockfish-20-rc2` source.
+- The PR reported passed STC and LTC upstream, so it was tested locally despite still being open.
+
+Source:
+
+- Repository: `https://github.com/Vizvezdenec/Stockfish`
+- Branch: `probcutSEDPR`
+- Commit: `72443b641fc1e234a3e1a0fb30282fbc312da047`
+
+Patch summary:
+
+- Reduce the ProbCut search depth by one extra ply when `improving` is true:
+  `depth - 4` becomes `depth - 4 - improving`.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the ProbCut depth change.
+
+Bench:
+
+- Nodes searched: `3140829`
+- Nodes/second: `893042`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062357`
+- Games: `64`
+- Wins: `21`
+- Losses: `22`
+- Draws: `21`
+- Score: `49.22%`
+- Elo: `-5.43 +/- 70.72`
+
+First official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062358`
+- Games: `64`
+- Wins: `19`
+- Losses: `17`
+- Draws: `28`
+- Score: `51.56%`
+- Elo: `+10.86 +/- 45.28`
+
+Second official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062359`
+- Games: `64`
+- Wins: `11`
+- Losses: `18`
+- Draws: `35`
+- Score: `44.53%`
+- Elo: `-38.15 +/- 45.27`
+
+Third official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062360`
+- Games: `64`
+- Wins: `21`
+- Losses: `13`
+- Draws: `30`
+- Score: `56.25%`
+- Elo: `+43.66 +/- 46.14`
+
+Combined UHO:
+
+- Games: `192`
+- Wins: `51`
+- Losses: `48`
+- Draws: `93`
+- Score: `50.78%` from the baseline perspective.
+
+Decision:
+
+- Rejected. The local UHO seeds were mixed and the combined UHO result slightly favored the current `stockfish-20-rc2` source, so the patch was removed.
+
 ## Incremental Rejection: Cached Normal Move Properties
 
 Purpose:
