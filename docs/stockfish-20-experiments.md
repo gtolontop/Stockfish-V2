@@ -893,6 +893,31 @@ Decision:
 
 - Rejected. The smoke filter clearly favored the current `stockfish-20-rc2` source, so no UHO or PGO follow-up was run.
 
+## Rejected Incremental: Early TT Prefetch
+
+Source:
+
+- Official open PR: `https://github.com/official-stockfish/Stockfish/pull/6911`
+- Upstream title: `prefetch the TT entry as soon as the move is known`
+- Branch tested locally: `https://github.com/dhanaway/Stockfish`, branch `early-tt-prefetch`
+- Head commit inspected: `eafe4208afc37e01eddc7659e56074e029d3e6ad`
+
+Patch summary:
+
+- Added `Position::prefetch_key(Move)` and used it in `Search::Worker::do_move()` to prefetch the child transposition-table entry before `Position::do_move()`.
+- The PR is upstream-clean and reported public bench speedups, but it is in the same broad prefetch risk area as the already rejected `opt-prefetch` candidate.
+
+Local result:
+
+- Build passed with `ARCH=native`.
+- Bench nodes searched: `3106469`.
+- Bench nodes/second: `884026`.
+- Smoke seed `2026062364`, from the `rc2-nopgo` baseline perspective: `23W / 18L / 23D`, score `53.91%`, Elo `+27.20 +/- 61.41`.
+
+Decision:
+
+- Rejected as a local incremental patch over `rc2`. The smoke filter favored the current release-candidate source, so no UHO or PGO follow-up was run.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

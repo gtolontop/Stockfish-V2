@@ -437,6 +437,42 @@ Decision:
 
 - Rejected. The smoke filter clearly favored the current `stockfish-20-rc2` source, so the patch was removed and no UHO or PGO follow-up was run.
 
+## Incremental Rejection: Early TT Prefetch
+
+Purpose:
+
+- Test official PR `#6911`, `prefetch the TT entry as soon as the move is known`, as a local prefetch candidate over the current `stockfish-20-rc2` source.
+- Source: `https://github.com/official-stockfish/Stockfish/pull/6911`
+- Branch: `https://github.com/dhanaway/Stockfish`, branch `early-tt-prefetch`
+- Head commit inspected: `eafe4208afc37e01eddc7659e56074e029d3e6ad`
+
+Patch notes:
+
+- Added `Position::prefetch_key(Move)`.
+- Prefetched `tt.first_entry(pos.prefetch_key(move))` at the start of `Search::Worker::do_move()`.
+- Upstream discussion reported positive bench speedups, but also noted that rare moves such as castling, en passant, and promotions can prefetch an unused line.
+
+Bench:
+
+- Command: `./stockfish bench 16 1 13 default depth`
+- Nodes searched: `3106469`
+- Nodes/second: `884026`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062364`
+- Games: `64`
+- Wins: `23`
+- Losses: `18`
+- Draws: `23`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 61.41`
+
+Decision:
+
+- Rejected. The smoke filter favored the current `stockfish-20-rc2` source, so no longer UHO test or PGO artifact was run.
+
 ## Incremental Rejection: Depth-Scaled Cutoff Mismatch Penalty
 
 Purpose:
