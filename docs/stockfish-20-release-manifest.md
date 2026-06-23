@@ -35,9 +35,26 @@ The official Stockfish download page still lists Stockfish 18 as the public stab
   - Path: `C:/Users/teamr/Desktop/stockfish/Stockfish-sf18/src/stockfish`
   - SHA256: `623F4347A71C282877C20929F602AC8871CB83B993952DA2C0F69EE3BF5EDECC`
 
+## Release Verification
+
+Run the release verifier before publishing or handing off the fork release candidate:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_release.ps1
+```
+
+The verifier checks:
+
+- Current branch: `fix/stockfish-20-release`.
+- Official push remote remains disabled: `DISABLED`.
+- Fork push remote remains `https://github.com/gtolontop/Stockfish-V2`.
+- Local HEAD matches `origin/fix/stockfish-20-release`.
+- Release and reference binary SHA256 values match this manifest.
+- The release binary reports `id name Stockfish 20` over UCI.
+
 ## Source State
 
-- Release documentation HEAD when this manifest was created: `b80b06cbb771ea03229a577d3ab908353bdb2726`
+- Initial release documentation HEAD when this manifest was created: `b80b06cbb771ea03229a577d3ab908353bdb2726`
 - `origin/fix/stockfish-20-release` matched local HEAD at verification time.
 - `official/master` verification point: `74a0a73715322608332038f7c0151ddf0609a59a`
 
