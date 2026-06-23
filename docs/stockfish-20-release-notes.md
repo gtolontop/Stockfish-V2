@@ -56,6 +56,16 @@ powershell -ExecutionPolicy Bypass -File scripts/verify_stockfish20_release.ps1
 
 The verifier checks the branch, fork-only remote safety, origin synchronization, release/reference binary hashes, and UCI identity.
 
+## Packaging
+
+Create the handoff zip with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/package_stockfish20_release.ps1
+```
+
+The script writes the package outside the repository under `C:/Users/teamr/Desktop/stockfish/match-results/release/`, includes `SHA256SUMS.txt`, and prints the zip SHA256 after packaging.
+
 ## Known Limits
 
 - This is not a formal Fishtest proof.

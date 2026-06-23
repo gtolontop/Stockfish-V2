@@ -52,6 +52,21 @@ The verifier checks:
 - Release and reference binary SHA256 values match this manifest.
 - The release binary reports `id name Stockfish 20` over UCI.
 
+## Release Packaging
+
+Create a fork-only handoff package after verification passes:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/package_stockfish20_release.ps1
+```
+
+The package script writes outside the Git worktree under:
+
+- Directory: `C:/Users/teamr/Desktop/stockfish/match-results/release/stockfish-20-rc2`
+- Zip: `C:/Users/teamr/Desktop/stockfish/match-results/release/stockfish-20-rc2-x86-64-avx512icl.zip`
+
+The package contains the release binary, a package README, `SHA256SUMS.txt`, and the release documentation set. The zip checksum is printed by the script after each package build.
+
 ## Source State
 
 - Initial release documentation HEAD when this manifest was created: `b80b06cbb771ea03229a577d3ab908353bdb2726`
