@@ -373,6 +373,50 @@ Decision:
 
 - Not applied. The branch is not a clean isolated patch for the current fork; testing it would require inventing a fresh retune rather than applying the inspected Fishtest change.
 
+## Incremental Rejection: Draw Contempt In Search
+
+Purpose:
+
+- Test the Fishtest-active `no_draw2` functional search patch over the current local `stockfish-20-rc2` source.
+- Stop at the smoke filter if the current rc2 baseline is ahead, because the public run was already negative.
+
+Source:
+
+- Repository: `https://github.com/snicolet/Stockfish`
+- Branch: `no_draw2`
+- Isolated commit: `82313e78f2c1907785a5fc9979fbe3c19b9ad5f0`
+- Public Fishtest status observed on 2026-06-23: negative.
+
+Patch summary:
+
+- Added `value_draw_with_contempt(int ply)`, returning `+200` on odd plies and `-200` on even plies.
+- Replaced immediate draw returns in main search and qsearch with that contempt value.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus the draw-contempt patch.
+
+Bench:
+
+- Nodes searched: `2714579`
+- Nodes/second: `906370`
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062346`
+- Games: `64`
+- Wins: `24`
+- Losses: `19`
+- Draws: `21`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 73.89`
+
+Decision:
+
+- Rejected. The current rc2 baseline won the smoke filter, so no longer UHO test was run. The source patch was reverted and `stockfish-20-rc2` remains the release candidate.
+
 ## Incremental Rejection: Restrict Singular Extension Depth Increase
 
 Purpose:

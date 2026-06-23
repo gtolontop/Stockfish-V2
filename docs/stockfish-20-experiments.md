@@ -716,6 +716,44 @@ Decision:
 
 - Not applied. Forcing the obsolete constants into the current fork would be a new hand-designed patch rather than an isolated upstream/Fishtest experiment.
 
+## Rejected Incremental: Draw Contempt In Search
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/snicolet/Stockfish`, branch `no_draw2`.
+- Isolated commit: `82313e78f2c1907785a5fc9979fbe3c19b9ad5f0`.
+- Fishtest active run observed on 2026-06-23 was negative.
+
+Patch summary:
+
+- Added `value_draw_with_contempt(int ply)` returning `+/-200`.
+- Used it for immediate draw returns in both main search and qsearch.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `2714579`
+- Nodes/second: `906370`
+- Bench signature changed, so this was treated as a functional search patch.
+
+Smoke result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Seed: `2026062346`
+- Games: `64`
+- Wins: `24`
+- Losses: `19`
+- Draws: `21`
+- Points: `34.5 / 64`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 73.89`
+
+Decision:
+
+- Rejected. The local smoke filter favored the current `rc2` baseline, matching the negative direction of the public run.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
