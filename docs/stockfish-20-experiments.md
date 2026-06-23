@@ -500,8 +500,46 @@ Decision:
 
 - Rejected locally as an incremental SMP patch over `rc2`. The only local 8-thread smoke test favored the current baseline, and the public active run was not positive enough to justify carrying the simplification.
 
+## Accepted Incremental: testNet02 Default Network
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/vondele/Stockfish`, branch `testNet02`.
+- Fishtest active run observed on 2026-06-23 had very large volume but only near-neutral positive LLR, so this needed local confirmation.
+
+Patch:
+
+```diff
+-#define EvalFileDefaultName "nn-71d6d32cb962.nnue"
++#define EvalFileDefaultName "nn-10d7f09dac5e.nnue"
+```
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `21`
+- Losses: `22`
+- Draws: `21`
+- Points: `31.5 / 64`
+- Score: `49.22%`
+- Elo: `-5.43 +/- 78.78`
+
+Official UHO short time-control results from the `rc2-nopgo` baseline perspective:
+
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062333`: `15W / 19L / 30D`, score `46.88%`, Elo `-21.74 +/- 52.17`.
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062334`: `16W / 18L / 30D`, score `48.44%`, Elo `-10.86 +/- 52.44`.
+- Combined UHO: `31W / 37L / 60D`, score `47.66%`.
+
+Decision:
+
+- Accepted locally as an incremental network update over `rc2`. Both UHO seeds favored the candidate, and the combined score supports rebuilding the release as `stockfish-20-rc3`.
+
 ## Current Status
 
-- One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
+- Two strength changes have been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut and the `testNet02` default network.
 - The fork release candidate should be rebuilt and retagged after PGO validation.
 - Future experiments should target different mechanisms instead of retuning these local history constants.

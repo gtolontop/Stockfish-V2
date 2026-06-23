@@ -283,3 +283,54 @@ SMP smoke result from the `Base` / rc2-nopgo perspective:
 Decision:
 
 - Rejected. The 8-thread smoke filter favored the current rc2 baseline.
+
+## Incremental Acceptance: testNet02 Default Network
+
+Purpose:
+
+- Test the Fishtest-active `testNet02` network over the current local `stockfish-20-rc2` source.
+- Compare non-PGO to non-PGO so the result measures the network change rather than the release build process.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus default network `nn-10d7f09dac5e.nnue`.
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062332`
+- Games: `64`
+- Wins: `21`
+- Losses: `22`
+- Draws: `21`
+- Score: `49.22%`
+- Elo: `-5.43 +/- 78.78`
+
+Official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062333`
+- Games: `64`
+- Wins: `15`
+- Losses: `19`
+- Draws: `30`
+- Score: `46.88%`
+- Elo: `-21.74 +/- 52.17`
+
+Second official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062334`
+- Games: `64`
+- Wins: `16`
+- Losses: `18`
+- Draws: `30`
+- Score: `48.44%`
+- Elo: `-10.86 +/- 52.44`
+
+Decision:
+
+- Accepted. Combined UHO was `31W / 37L / 60D` from the current rc2 baseline perspective, score `47.66%`, so the candidate network improved the release candidate in local validation.
