@@ -155,6 +155,39 @@ Decision:
 
 - Rejected locally. The smoke result was strong, but fixed-node UHO and the larger time-control confirmation were neutral; this is not sufficient release evidence.
 
+## Rejected: Gate Correction History Updates By Depth
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/anematode/Stockfish`, branch `emotibonk`.
+- Fishtest active run observed on 2026-06-23 had positive LLR, but was not a finished accepted upstream patch.
+
+Patch:
+
+```diff
+-    if (!ss->inCheck && !(bestMove && pos.capture(bestMove))
++    if (!ss->inCheck && !(bestMove && pos.capture(bestMove)) && depth > 2
+         && (bestValue > ss->staticEval) == bool(bestMove))
+```
+
+Bench:
+
+- Nodes searched: `2849871`
+
+Initial result from the baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `22`
+- Losses: `21`
+- Draws: `21`
+- Points: `32.5 / 64`
+- Score: `50.78%`
+- Elo: `+5.43 +/- 75.65`
+
+Decision:
+
+- Rejected. The first local smoke filter did not show an advantage for the candidate.
+
 ## Current Status
 
 - No source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline.
