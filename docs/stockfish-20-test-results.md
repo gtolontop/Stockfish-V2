@@ -254,3 +254,32 @@ Second official UHO result from the `Base` / rc2-nopgo perspective:
 Decision:
 
 - Rejected. Combined UHO was `29W / 26L / 73D` for the current rc2 baseline, so the candidate did not improve the release candidate.
+
+## Incremental Rejection: Simplified Thread Selection
+
+Purpose:
+
+- Test the Fishtest-active `sim-threadselection` SMP change over the current local `stockfish-20-rc2` source.
+- Use `THREADS=8` because the patch only affects multi-thread root thread selection.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus simplified `ThreadPool::get_best_thread()` voting.
+
+SMP smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `1+0.01`
+- Threads: `8`
+- Concurrency: `1`
+- Seed: `2026062331`
+- Games: `32`
+- Wins: `7`
+- Losses: `5`
+- Draws: `20`
+- Score: `53.12%`
+- Elo: `+21.74 +/- 51.61`
+
+Decision:
+
+- Rejected. The 8-thread smoke filter favored the current rc2 baseline.

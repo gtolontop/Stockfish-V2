@@ -467,6 +467,39 @@ Decision:
 
 - Rejected locally as an incremental patch over `rc2`. The smoke filter favored the candidate, but the two UHO seeds left the current baseline slightly ahead overall.
 
+## Rejected Incremental: Simplified Thread Selection
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/robertnurnberg/Stockfish`, branch `sim-threadselection`.
+- Fishtest active LTC run observed on 2026-06-23 was an 8-thread simplification test and had drifted near neutral.
+
+Patch summary:
+
+- Removed root depth from the thread voting score in `ThreadPool::get_best_thread()`.
+- Used PV length as the tie-breaker when votes are equal.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Initial SMP result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd`:
+
+- Time control: `1+0.01`
+- Threads: `8`
+- Concurrency: `1`
+- Games: `32`
+- Wins: `7`
+- Losses: `5`
+- Draws: `20`
+- Points: `17.0 / 32`
+- Score: `53.12%`
+- Elo: `+21.74 +/- 51.61`
+
+Decision:
+
+- Rejected locally as an incremental SMP patch over `rc2`. The only local 8-thread smoke test favored the current baseline, and the public active run was not positive enough to justify carrying the simplification.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.
