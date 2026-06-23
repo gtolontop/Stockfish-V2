@@ -349,6 +349,46 @@ Decision:
 
 - Rejected. The first incremental smoke filter showed the `rc2` baseline ahead.
 
+## Rejected Incremental: Cached Normal Move Properties
+
+Source:
+
+- Public Fishtest-active branch: `https://github.com/bobbypaper/Stockfish`, branch `normal-move-properties-state`.
+- Fishtest active run observed on 2026-06-23 was still in progress, so this was treated as an experimental candidate only.
+
+Patch summary:
+
+- Added a local `NormalMoveState` helper in `src/search.cpp`.
+- Cached occupancy, king blockers, and king bitboards for normal move legality and gives-check queries in the main search and qsearch move loops.
+- Non-normal moves kept the existing `pos.legal()`, `pos.gives_check()`, and `pos.capture_stage()` paths.
+
+Incremental baseline:
+
+- `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+
+Bench:
+
+- Nodes searched: `3106469`
+- Nodes/second: `927304`
+
+Initial result from the `rc2-nopgo` baseline perspective on `tests/openings/smoke.epd` with `TC=0.2+0.002`:
+
+- Games: `64`
+- Wins: `24`
+- Losses: `19`
+- Draws: `21`
+- Points: `34.5 / 64`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 78.70`
+
+Official UHO short time-control result from the `rc2-nopgo` baseline perspective:
+
+- `TC=5+0.05`, `uho_lichess_4852_sample_256.epd`, seed `2026062326`: `22W / 14L / 28D`, score `56.25%`, Elo `+43.66 +/- 40.64`.
+
+Decision:
+
+- Rejected locally as an incremental patch over `rc2`. The smoke filter was mildly favorable, but the longer UHO test showed the current `rc2` baseline clearly ahead.
+
 ## Current Status
 
 - One source-level strength patch has been accepted beyond using the stronger post-Stockfish-18 official development baseline: lazy simple evaluation shortcut.

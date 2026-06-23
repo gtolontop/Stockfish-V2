@@ -137,3 +137,42 @@ Interpretation:
 
 - The final PGO `stockfish-20-rc2` artifact scores clearly ahead of the saved current development baseline in this local short time-control UHO validation.
 - This strengthens the release-candidate evidence because it validates the actual shipped artifact, not only the non-PGO experiment build.
+
+## Incremental Rejection: Cached Normal Move Properties
+
+Purpose:
+
+- Test the Fishtest-active `normal-move-properties-state` idea as an incremental patch over the current local `stockfish-20-rc2` source.
+- Compare non-PGO to non-PGO so the result measures the patch rather than the release build process.
+
+Builds:
+
+- `Base`: `C:/Users/teamr/Desktop/stockfish/match-results/bin/stockfish-20-rc2-nopgo`
+- `New`: local non-PGO build from the same rc2 source plus cached normal move legality and gives-check state in `src/search.cpp`.
+
+Smoke result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `0.2+0.002`
+- Seed: `2026062325`
+- Games: `64`
+- Wins: `24`
+- Losses: `19`
+- Draws: `21`
+- Score: `53.91%`
+- Elo: `+27.20 +/- 78.70`
+
+Official UHO result from the `Base` / rc2-nopgo perspective:
+
+- Time control: `5+0.05`
+- Opening sample: `uho_lichess_4852_sample_256.epd`
+- Seed: `2026062326`
+- Games: `64`
+- Wins: `22`
+- Losses: `14`
+- Draws: `28`
+- Score: `56.25%`
+- Elo: `+43.66 +/- 40.64`
+
+Decision:
+
+- Rejected. The longer UHO test showed the current rc2 baseline ahead, so the source patch was removed.
