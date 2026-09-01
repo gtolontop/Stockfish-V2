@@ -30,6 +30,7 @@
 #include <list>
 #include <ratio>
 #include <string>
+#include <thread>
 #include <utility>
 
 #include "bitboard.h"
@@ -41,6 +42,7 @@
 #include "nnue/network.h"
 #include "nnue/nnue_accumulator.h"
 #include "position.h"
+#include "stockhuman.h"
 #include "syzygy/tbprobe.h"
 #include "thread.h"
 #include "timeman.h"
@@ -236,9 +238,31 @@ void Search::Worker::start_searching() {
     Worker* bestThread = this;
     Skill   skill =
       Skill(options["Skill Level"], options["UCI_LimitStrength"] ? int(options["UCI_Elo"]) : 0);
+    bool stockHuman = StockHuman::enabled(options);
 
-    if (!limits.depth && !skill.enabled())
+    if (!limits.depth && !skill.enabled() && !stockHuman)
         bestThread = threads.get_best_thread()->worker.get();
+
+    StockHuman::Decision humanDecision;
+    if (stockHuman)
+    {
+        usize humanPV =
+          StockHuman::candidate_count(options, std::min(bestThread->rootMoves.size(), rootMoves.size()));
+        humanDecision =
+          StockHuman::choose_move(options, limits, bestThread->rootPos, bestThread->rootMoves,
+                                  humanPV);
+
+        if (humanDecision.move)
+        {
+            auto picked = std::find(bestThread->rootMoves.begin(), bestThread->rootMoves.end(),
+                                    humanDecision.move);
+            if (picked != bestThread->rootMoves.end())
+                std::swap(bestThread->rootMoves[0], *picked);
+
+            if (bool(options["HumanDebug"]))
+                sync_cout << "info string " << humanDecision.reason << sync_endl;
+        }
+    }
 
     main_manager()->bestPreviousScore        = bestThread->rootMoves[0].score;
     main_manager()->bestPreviousAverageScore = bestThread->rootMoves[0].averageScore;
@@ -255,6 +279,21 @@ void Search::Worker::start_searching() {
     std::string ponder;
     if (bestThread->rootMoves[0].pv.size() > 1)
         ponder = UCIEngine::move(bestThread->rootMoves[0].pv[1], rootPos.is_chess960());
+
+    if (stockHuman)
+    {
+        StockHuman::TimePlan timePlan =
+          StockHuman::plan_think_time(options, limits, bestThread->rootPos, bestThread->rootMoves,
+                                      humanDecision);
+        TimePoint target = timePlan.target;
+
+        if (bool(options["HumanDebug"]) && !timePlan.reason.empty())
+            sync_cout << "info string " << timePlan.reason << sync_endl;
+
+        TimePoint elapsed = elapsed_time();
+        if (target > elapsed)
+            std::this_thread::sleep_for(std::chrono::milliseconds(target - elapsed));
+    }
 
     auto bestmove = UCIEngine::move(bestThread->rootMoves[0].pv[0], rootPos.is_chess960());
     main_manager()->updates.onBestmove(bestmove, ponder);
@@ -309,11 +348,14 @@ bool Search::Worker::iterative_deepening() {
 
     usize multiPV = usize(options["MultiPV"]);
     Skill skill(options["Skill Level"], options["UCI_LimitStrength"] ? int(options["UCI_Elo"]) : 0);
+    bool  stockHuman = StockHuman::enabled(options);
 
     // When playing with strength handicap enable MultiPV search that we will
     // use behind-the-scenes to retrieve a set of possible moves.
-    if (skill.enabled())
+    if (skill.enabled() && !stockHuman)
         multiPV = std::max(multiPV, usize(4));
+    if (stockHuman)
+        multiPV = std::max(multiPV, StockHuman::candidate_count(options, rootMoves.size()));
 
     multiPV = std::min(multiPV, rootMoves.size());
 
@@ -553,7 +595,7 @@ bool Search::Worker::iterative_deepening() {
             continue;
 
         // If the skill level is enabled and time is up, pick a sub-optimal best move
-        if (skill.enabled() && skill.time_to_pick(rootDepth))
+        if (skill.enabled() && !stockHuman && skill.time_to_pick(rootDepth))
             skill.pick_best(rootMoves, multiPV);
 
         // Use part of the gained time from a previous stable move for the current move
@@ -593,11 +635,19 @@ bool Search::Worker::iterative_deepening() {
                 totalTime = std::min(561.7, totalTime);
 
             auto elapsedTime = elapsed();
+            TimePoint humanTimeLimit =
+              stockHuman ? StockHuman::search_time_limit(options, limits, rootPos, rootMoves,
+                                                         multiPV, rootDepth)
+                         : TimePoint(0);
+            double stopTime = std::min(totalTime, double(mainThread->tm.maximum()));
+
+            if (humanTimeLimit)
+                stopTime = std::min(stopTime, double(humanTimeLimit));
 
             // Stop the search if we have exceeded totalTime or maximum time,
             // or if we know that there are no better moves in the analysed line(s)
-            if (elapsedTime > std::min(totalTime, double(mainThread->tm.maximum()))
-                || rootMoves[multiPV - 1].score >= mate_in(3) || rootMoves[0].score == mated_in(2))
+            if (elapsedTime > stopTime || rootMoves[multiPV - 1].score >= mate_in(3)
+                || rootMoves[0].score == mated_in(2))
             {
                 // If we are allowed to ponder do not stop the search now but
                 // keep pondering until the GUI sends "ponderhit" or "stop".
@@ -607,7 +657,7 @@ bool Search::Worker::iterative_deepening() {
                     threads.stop = true;
             }
             else
-                threads.increaseDepth = mainThread->ponder || elapsedTime <= totalTime * 0.50;
+                threads.increaseDepth = mainThread->ponder || elapsedTime <= stopTime * 0.50;
         }
 
         mainThread->iterValue[iterIdx] = bestValue;
@@ -620,7 +670,7 @@ bool Search::Worker::iterative_deepening() {
     mainThread->previousTimeReduction = timeReduction;
 
     // If the skill level is enabled, swap the best PV line with the sub-optimal one
-    if (skill.enabled())
+    if (skill.enabled() && !stockHuman)
         std::swap(rootMoves[0],
                   *std::find(rootMoves.begin(), rootMoves.end(),
                              skill.best ? skill.best : skill.pick_best(rootMoves, multiPV)));

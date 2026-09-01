@@ -119,6 +119,30 @@ Engine::Engine(std::optional<std::string> path) :
 
     options.add("UCI_ShowWDL", Option(false));
 
+    options.add("StockHuman", Option(false));
+
+    options.add("HumanElo", Option(1500, 800, 3000));
+
+    options.add("HumanStyle", Option("Balanced"));
+
+    options.add("HumanConsistency", Option(72, 0, 100));
+
+    options.add("HumanTilt", Option(12, 0, 100));
+
+    options.add("HumanThinkTime", Option(100, 0, 200));
+
+    options.add("HumanOpeningKnowledge", Option(65, 0, 100));
+
+    options.add("HumanAdaptation", Option(25, 0, 100));
+
+    options.add("HumanRandomSeed", Option(0, 0, 999999999));
+
+    options.add("HumanPolicyFile", Option(""));
+
+    options.add("HumanPolicyMix", Option(0, 0, 100));
+
+    options.add("HumanDebug", Option(false));
+
     options.add(  //
       "SyzygyPath", Option("", [](const Option& o) {
           Tablebases::init(o);
